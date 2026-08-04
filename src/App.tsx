@@ -15,6 +15,8 @@ import SavedCollections from './pages/SavedCollections';
 import SettingsPage from './pages/Settings';
 import CuratorPanel from './pages/CuratorPanel';
 import AuthPage from './pages/Auth';
+import { ExcavationSimulator } from './pages/ExcavationSimulator';
+import { ResearchWorkspace } from './pages/ResearchWorkspace';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -80,6 +82,10 @@ function AppContent() {
         );
       case 'library':
         return <ResearchLibrary />;
+      case 'excavations':
+        return <ExcavationSimulator />;
+      case 'workspace':
+        return <ResearchWorkspace />;
       case 'learning':
         return <LearningCenter />;
       case 'collections':

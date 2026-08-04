@@ -20,7 +20,9 @@ import {
   Share2,
   ShieldCheck,
   LogIn,
-  LogOut
+  LogOut,
+  Compass,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -56,12 +58,14 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const menuItems: SidebarItem[] = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'explorer', label: 'World Explorer', icon: Globe },
+    { id: 'excavations', label: 'Virtual Excavations', icon: Compass },
     { id: 'civilizations', label: 'Civilizations', icon: Landmark },
     { id: 'artifacts', label: 'Artifact Curation', icon: Scroll },
     { id: 'figures', label: 'Historical Figures', icon: Crown },
     { id: 'timeline', label: 'Interactive Timeline', icon: Clock },
     { id: 'graph', label: 'Knowledge Graph', icon: Share2 },
     { id: 'ai-historian', label: 'AI Historian', icon: MessageSquare },
+    { id: 'workspace', label: 'Research Workspace', icon: BookOpen },
     { id: 'library', label: 'Research Library', icon: Library },
     { id: 'learning', label: 'Learning Center', icon: GraduationCap },
     { id: 'collections', label: 'Saved Collections', icon: Star },

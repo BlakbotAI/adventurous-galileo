@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Scroll, Sparkles, X, ShieldAlert, Award, RefreshCw, MessageSquare, BookOpen } from 'lucide-react';
+import { Scroll, X, ShieldAlert, Award, RefreshCw, MessageSquare, BookOpen } from 'lucide-react';
 import { db } from '../services/db';
 import type { Artifact } from '../types/database';
+import { ArtifactViewer3D } from '../components/ArtifactViewer3D';
 
 interface ArtifactsProps {
   onNavigateToTab: (tab: string) => void;
@@ -112,33 +113,36 @@ export const Artifacts: React.FC<ArtifactsProps> = ({ onNavigateToTab, userRole 
               {/* Left Column: Visuals */}
               <div className="space-y-4">
                 {/* 3D Hologram Viewer / Image Toggle */}
-                <div className="relative rounded-xl overflow-hidden aspect-video bg-matte-900 border border-gold-500/10 flex items-center justify-center group">
+                <div className={`relative rounded-xl overflow-hidden bg-matte-900 border border-gold-500/10 ${!rotate3D ? 'aspect-video flex items-center justify-center' : ''} group`}>
                   {!rotate3D ? (
-                    <img
-                      src={selectedArt.imageUrl}
-                      alt={selectedArt.name}
-                      className="w-full h-full object-cover filter brightness-90"
-                    />
+                    <>
+                      <img
+                        src={selectedArt.imageUrl}
+                        alt={selectedArt.name}
+                        className="w-full h-full object-cover filter brightness-90"
+                      />
+                      {/* Toggle 3D Button */}
+                      <button
+                        onClick={() => setRotate3D(!rotate3D)}
+                        className="absolute bottom-3 right-3 px-3 py-1 bg-black/85 backdrop-blur text-[10px] text-gold-500 hover:text-white font-mono rounded border border-gold-500/20 flex items-center gap-1.5 transition-colors z-10"
+                      >
+                        <RefreshCw size={12} className={rotate3D ? 'animate-spin' : ''} />
+                        {rotate3D ? 'View Standard Image' : 'Activate 3D Hologram'}
+                      </button>
+                    </>
                   ) : (
-                    /* 3D Spin Simulation */
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-radial-glow relative overflow-hidden animate-pulse">
-                      <div className="w-24 h-24 rounded-full border-2 border-dashed border-gold-500/40 animate-spin flex items-center justify-center">
-                        <Sparkles size={28} className="text-gold-500" />
-                      </div>
-                      <span className="text-[10px] tracking-widest font-mono text-gold-400 mt-4 uppercase animate-pulse-glow">
-                        3D Hologram rendering...
-                      </span>
+                    <div className="relative">
+                      <ArtifactViewer3D artifactId={selectedArt.id} />
+                      {/* Toggle 3D Button */}
+                      <button
+                        onClick={() => setRotate3D(!rotate3D)}
+                        className="absolute bottom-[60px] left-[16px] px-3 py-1.5 bg-black/85 backdrop-blur text-[10px] text-gold-500 hover:text-white font-mono rounded border border-gold-500/20 flex items-center gap-1.5 transition-colors z-20"
+                      >
+                        <RefreshCw size={12} className={rotate3D ? 'animate-spin' : ''} />
+                        {rotate3D ? 'View Standard Image' : 'Activate 3D Hologram'}
+                      </button>
                     </div>
                   )}
-
-                  {/* Toggle 3D Button */}
-                  <button
-                    onClick={() => setRotate3D(!rotate3D)}
-                    className="absolute bottom-3 right-3 px-3 py-1 bg-black/85 backdrop-blur text-[10px] text-gold-500 hover:text-white font-mono rounded border border-gold-500/20 flex items-center gap-1.5 transition-colors"
-                  >
-                    <RefreshCw size={12} className={rotate3D ? 'animate-spin' : ''} />
-                    {rotate3D ? 'View Standard Image' : 'Activate 3D Hologram'}
-                  </button>
                 </div>
 
                 {/* Key Provenance Stats */}
