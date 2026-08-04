@@ -144,7 +144,24 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
         { id: 'mali', center: [16.7, -3.0], radius: 600000, color: '#d4af37' },
         { id: 'benin', center: [6.3, 5.6], radius: 300000, color: '#cd7f32' },
         { id: 'great_zimbabwe', center: [-20.2, 30.9], radius: 350000, color: '#d4af37' },
-        { id: 'tiwanaku', center: [-16.5, -68.6], radius: 350000, color: '#cd7f32' }
+        { id: 'tiwanaku', center: [-16.5, -68.6], radius: 350000, color: '#cd7f32' },
+        { id: 'mapungubwe', center: [-22.2, 29.3], radius: 250000, color: '#d4af37' },
+        { id: 'nok', center: [9.5, 8.0], radius: 300000, color: '#cd7f32' },
+        { id: 'caral', center: [-10.9, -77.6], radius: 250000, color: '#cd7f32' },
+        { id: 'inca', center: [-13.5, -71.9], radius: 650000, color: '#d4af37' },
+        { id: 'mexica', center: [19.4, -99.1], radius: 550000, color: '#d4af37' },
+        { id: 'moche', center: [-8.1, -79.0], radius: 300000, color: '#cd7f32' },
+        { id: 'igbo_ukwu', center: [6.0, 7.0], radius: 200000, color: '#cd7f32' },
+        { id: 'asante', center: [6.7, -1.6], radius: 350000, color: '#d4af37' },
+        { id: 'oyo', center: [8.0, 4.3], radius: 300000, color: '#cd7f32' },
+        { id: 'jolof', center: [15.3, -15.4], radius: 350000, color: '#d4af37' },
+        { id: 'hausa', center: [12.0, 8.5], radius: 400000, color: '#d4af37' },
+        { id: 'sao', center: [12.8, 14.5], radius: 250000, color: '#cd7f32' },
+        { id: 'taino', center: [19.0, -72.0], radius: 400000, color: '#cd7f32' },
+        { id: 'achaemenid', center: [29.9, 52.9], radius: 850000, color: '#d4af37' },
+        { id: 'srivijaya', center: [-2.9, 104.7], radius: 750000, color: '#cd7f32' },
+        { id: 'chola', center: [10.8, 79.1], radius: 650000, color: '#d4af37' },
+        { id: 'kongo', center: [-6.1, 14.2], radius: 450000, color: '#cd7f32' }
       ];
 
       kingdoms.forEach(k => {

@@ -113,7 +113,7 @@ class LocalDatabase {
   }
 
   private init() {
-    if (localStorage.getItem('hios_db_initialized') !== 'v2') {
+    if (localStorage.getItem('hios_db_initialized') !== 'v3') {
       localStorage.setItem('hios_db_civilizations', JSON.stringify(CIVILIZATIONS));
       localStorage.setItem('hios_db_artifacts', JSON.stringify(ARTIFACTS));
       localStorage.setItem('hios_db_figures', JSON.stringify(FIGURES));
@@ -184,7 +184,7 @@ class LocalDatabase {
       ];
       localStorage.setItem('hios_db_quiz_questions', JSON.stringify(defaultQuizzes));
       
-      localStorage.setItem('hios_db_initialized', 'v2');
+      localStorage.setItem('hios_db_initialized', 'v3');
     }
 
     if (!localStorage.getItem('hios_db_quiz_questions')) {
