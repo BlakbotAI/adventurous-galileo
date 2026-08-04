@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Layers, ZoomIn, ZoomOut, Search, Info, X } from 'lucide-react';
 import { db } from '../services/db';
 import { Globe3D } from '../components/Globe3D';
@@ -25,11 +25,26 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
   const [activeLayers, setActiveLayers] = useState<string[]>(['kingdoms', 'sites']);
   const [selectedEntity, setSelectedEntity] = useState<any>(null);
   const [searchVal, setSearchVal] = useState('');
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [is3D, setIs3D] = useState(false);
+  const [mapTheme, setMapTheme] = useState<'satellite' | 'terrain' | 'dark'>('satellite');
+
+  // Leaflet map hooks
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const mapRef = useRef<any>(null);
+  const layerGroupRef = useRef<any>(null);
+  const tileLayerRef = useRef<any>(null);
+
+  const markers: SiteMarker[] = [
+    { name: 'Meroë Pyramids', lat: 16.9022, lng: 33.7497, type: 'Monument', civId: 'kush', description: 'Royal burial city of the Kushite kings featuring over 200 steep-angled pyramids.', dating: 'Radio-carbon and Merotic script logs' },
+    { name: 'Kerma Deffufa', lat: 19.6000, lng: 30.4000, type: 'Monument', civId: 'kush', description: 'Massive mud-brick monument (Deffufa) representing early Nubian religious architecture.', dating: 'Stratigraphy (2500 BCE)' },
+    { name: 'Giza Pyramids', lat: 29.9792, lng: 31.1342, type: 'Monument', civId: 'kemet', description: 'Monumental limestone funerary structures built during the Old Kingdom of Kemet.', dating: 'Carbon-14 (2560 BCE)' },
+    { name: 'Timbuktu University', lat: 16.7666, lng: -3.0026, type: 'City', civId: 'mali', description: 'Global center of Islamic education housing hundreds of thousands of scientific manuscripts.', dating: 'Textual records (12th Century CE)' },
+    { name: 'Lalibela Churches', lat: 12.0319, lng: 39.0412, type: 'Monument', civId: 'aksum', description: 'Monolithic rock-hewn churches carved directly into pink volcanic tuff.', dating: 'Architectural Style (12th Century CE)' },
+    { name: 'Great Enclosure', lat: -20.2681, lng: 30.9333, type: 'Monument', civId: 'great_zimbabwe', description: 'The largest dry-stone structure in sub-Saharan Africa, built without mortar.', dating: 'Carbon dating (1300 CE)' },
+    { name: 'Lopo River Port', lat: -6.1200, lng: 12.3800, type: 'City', civId: 'kongo', description: 'Trading hub on the Congo River connecting the capital M\'banza Kongo to trade loops.', dating: 'Oral histories and trade ledgers' },
+    { name: 'Tiwanaku Sun Gate', lat: -16.5547, lng: -68.6736, type: 'Monument', civId: 'tiwanaku', description: 'Monolithic stone gateway carved from a single block of andesite, bearing detailed carvings.', dating: 'Obsidian hydration (500 CE)' },
+    { name: 'Mapungubwe Hill', lat: -22.2472, lng: 29.3872, type: 'Excavation', civId: 'mapungubwe', description: 'Stone-walled palace site containing the famous golden rhinoceros burial.', dating: 'Carbon-14 (1200 CE)' }
+  ];
 
   const toggleLayer = (layerId: string) => {
     if (activeLayers.includes(layerId)) {
@@ -51,65 +66,187 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
     return activeYear >= route.startYear && activeYear <= route.endYear;
   };
 
-  // Coordinates mapping (mercator projection approximation for SVG)
-  const getCoordinates = (lat: number, lng: number) => {
-    const x = (lng + 180) * (800 / 360);
-    const latRad = (lat * Math.PI) / 180;
-    const mercN = Math.log(Math.tan(Math.PI / 4 + latRad / 2));
-    const y = 250 - (500 * mercN) / (2 * Math.PI);
-    return { x, y };
-  };
+  // Load Leaflet CDN script and stylesheet dynamically
+  useEffect(() => {
+    if ((window as any).L) {
+      setMapLoaded(true);
+      return;
+    }
 
-  const markers: SiteMarker[] = [
-    { name: 'Meroë Pyramids', lat: 16.9022, lng: 33.7497, type: 'Monument', civId: 'kush', description: 'Royal burial city of the Kushite kings featuring over 200 steep-angled pyramids.', dating: 'Radio-carbon and Merotic script logs' },
-    { name: 'Kerma Deffufa', lat: 19.6000, lng: 30.4000, type: 'Monument', civId: 'kush', description: 'Massive mud-brick monument (Deffufa) representing early Nubian religious architecture.', dating: 'Stratigraphy (2500 BCE)' },
-    { name: 'Giza Pyramids', lat: 29.9792, lng: 31.1342, type: 'Monument', civId: 'kemet', description: 'Monumental limestone funerary structures built during the Old Kingdom of Kemet.', dating: 'Carbon-14 (2560 BCE)' },
-    { name: 'Timbuktu University', lat: 16.7666, lng: -3.0026, type: 'City', civId: 'mali', description: 'Global center of Islamic education housing hundreds of thousands of scientific manuscripts.', dating: 'Textual records (12th Century CE)' },
-    { name: 'Lalibela Churches', lat: 12.0319, lng: 39.0412, type: 'Monument', civId: 'aksum', description: 'Monolithic rock-hewn churches carved directly into pink volcanic tuff.', dating: 'Architectural Style (12th Century CE)' },
-    { name: 'Great Enclosure', lat: -20.2681, lng: 30.9333, type: 'Monument', civId: 'great_zimbabwe', description: 'The largest dry-stone structure in sub-Saharan Africa, built without mortar.', dating: 'Carbon dating (1300 CE)' },
-    { name: 'Lopo River Port', lat: -6.1200, lng: 12.3800, type: 'City', civId: 'kongo', description: 'Trading hub on the Congo River connecting the capital M\'banza Kongo to trade loops.', dating: 'Oral histories and trade ledgers' },
-    { name: 'Tiwanaku Sun Gate', lat: -16.5547, lng: -68.6736, type: 'Monument', civId: 'tiwanaku', description: 'Monolithic stone gateway carved from a single block of andesite, bearing detailed carvings.', dating: 'Obsidian hydration (500 CE)' },
-    { name: 'Mapungubwe Hill', lat: -22.2472, lng: 29.3872, type: 'Excavation', civId: 'mapungubwe', description: 'Stone-walled palace site containing the famous golden rhinoceros burial.', dating: 'Carbon-14 (1200 CE)' }
-  ];
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
 
-  const continentPaths = {
-    africa: "M 360,170 C 370,180 390,170 410,180 C 430,190 450,195 470,210 C 480,220 500,210 520,240 C 530,250 510,270 490,290 C 480,300 460,330 460,350 C 460,370 450,390 440,410 C 430,420 415,440 405,445 C 390,450 380,430 380,410 C 385,395 385,370 375,360 C 365,350 355,340 345,320 C 335,300 320,280 310,260 C 305,250 300,240 305,230 C 310,220 325,210 330,190 C 335,170 345,160 360,170 Z",
-    southAmerica: "M 200,240 C 220,250 240,270 250,290 C 260,310 270,330 270,350 C 270,370 255,400 240,430 C 230,450 210,470 205,480 C 200,480 195,470 190,450 C 185,430 170,390 160,370 C 150,350 145,330 145,320 C 145,310 150,300 160,280 C 170,260 185,250 200,240 Z",
-    northAmerica: "M 100,50 C 130,40 180,30 210,50 C 220,60 230,70 250,80 C 270,90 280,105 285,115 C 290,125 280,140 260,150 C 240,160 220,180 200,190 C 190,195 180,210 170,230 C 160,240 150,240 145,230 C 140,220 145,200 135,190 C 125,180 100,170 90,155 C 80,140 70,120 70,100 C 70,80 85,60 100,50 Z",
-    eurasia: "M 320,100 C 340,90 380,85 410,90 C 440,95 480,80 520,70 C 560,60 620,50 670,60 C 720,70 750,90 770,110 C 790,130 780,150 750,170 C 720,190 700,210 690,230 C 680,250 690,260 710,270 C 730,280 740,290 745,300 C 740,310 710,320 680,300 C 650,285 620,270 590,260 C 560,250 540,255 520,265 C 500,275 480,260 470,245 C 460,230 450,200 420,190 C 390,180 370,190 350,175 C 330,160 320,130 320,100 Z",
-    australia: "M 670,320 C 690,320 710,330 720,345 C 730,360 725,380 710,395 C 695,410 675,410 655,405 C 635,400 625,385 625,370 C 625,355 650,320 670,320 Z"
-  };
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.async = true;
+    script.onload = () => {
+      setMapLoaded(true);
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      // clean up link and script if needed
+    };
+  }, []);
+
+  // Set up and manage Leaflet map instance
+  useEffect(() => {
+    if (!mapLoaded || is3D) return;
+
+    const L = (window as any).L;
+    if (!L) return;
+
+    // 1. Initialize map
+    if (!mapRef.current) {
+      mapRef.current = L.map('leaflet-map-explorer', {
+        zoomControl: false,
+        attributionControl: false
+      }).setView([12, 18], 3.2); // Center on African continent
+
+      layerGroupRef.current = L.layerGroup().addTo(mapRef.current);
+    }
+
+    const map = mapRef.current;
+    const layerGroup = layerGroupRef.current;
+
+    // 2. Set Tile Layer based on theme selection
+    if (tileLayerRef.current) {
+      map.removeLayer(tileLayerRef.current);
+    }
+
+    let tileUrl = '';
+    if (mapTheme === 'satellite') {
+      // Google Satellite Hybrid (lyrs=y)
+      tileUrl = 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}';
+    } else if (mapTheme === 'terrain') {
+      // Google Physical Terrain (lyrs=p)
+      tileUrl = 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}';
+    } else {
+      // Dark styled tiles (CartoDB Dark Matter)
+      tileUrl = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    }
+
+    tileLayerRef.current = L.tileLayer(tileUrl, {
+      maxZoom: 18
+    }).addTo(map);
+
+    // 3. Clear and draw current active data overlays
+    layerGroup.clearLayers();
+
+    // Draw active Kingdoms
+    if (activeLayers.includes('kingdoms')) {
+      const kingdoms = [
+        { id: 'kemet', center: [26.8, 30.8], radius: 450000, color: '#d4af37' },
+        { id: 'kush', center: [19.6, 30.4], radius: 400000, color: '#d4af37' },
+        { id: 'aksum', center: [14.0, 39.0], radius: 350000, color: '#cd7f32' },
+        { id: 'mali', center: [16.7, -3.0], radius: 600000, color: '#d4af37' },
+        { id: 'benin', center: [6.3, 5.6], radius: 300000, color: '#cd7f32' },
+        { id: 'great_zimbabwe', center: [-20.2, 30.9], radius: 350000, color: '#d4af37' },
+        { id: 'tiwanaku', center: [-16.5, -68.6], radius: 350000, color: '#cd7f32' }
+      ];
+
+      kingdoms.forEach(k => {
+        if (isCivActiveInYear(k.id)) {
+          const civData = CIVILIZATIONS.find(c => c.id === k.id);
+          const circle = L.circle(k.center as any, {
+            radius: k.radius,
+            color: k.color,
+            fillColor: k.color,
+            fillOpacity: 0.22,
+            weight: 1.5,
+            dashArray: '4, 4'
+          });
+          circle.on('click', () => {
+            setSelectedEntity({ ...civData, entityType: 'Kingdom' });
+          });
+          circle.addTo(layerGroup);
+        }
+      });
+    }
+
+    // Draw Trade Routes
+    if (activeLayers.includes('routes')) {
+      TRADE_ROUTES.forEach(route => {
+        if (isRouteActiveInYear(route)) {
+          const polyline = L.polyline(route.coordinates as any, {
+            color: '#cd7f32',
+            weight: 2.5,
+            dashArray: '6, 6',
+            opacity: 0.85
+          });
+          polyline.on('click', () => {
+            setSelectedEntity({ ...route, entityType: 'Route' });
+          });
+          polyline.addTo(layerGroup);
+        }
+      });
+    }
+
+    // Draw Migration Routes
+    if (activeLayers.includes('migrations')) {
+      MIGRATION_ROUTES.forEach(route => {
+        if (isRouteActiveInYear(route)) {
+          const polyline = L.polyline(route.coordinates as any, {
+            color: '#a855f7',
+            weight: 2.5,
+            dashArray: '6, 6',
+            opacity: 0.85
+          });
+          polyline.on('click', () => {
+            setSelectedEntity({ ...route, entityType: 'Route' });
+          });
+          polyline.addTo(layerGroup);
+        }
+      });
+    }
+
+    // Draw Archaeological Monuments
+    if (activeLayers.includes('sites')) {
+      markers.forEach(m => {
+        if (isCivActiveInYear(m.civId)) {
+          const marker = L.circleMarker([m.lat, m.lng], {
+            radius: 8,
+            color: '#080808',
+            fillColor: '#22c55e',
+            fillOpacity: 0.95,
+            weight: 1.5
+          });
+          marker.on('click', () => {
+            setSelectedEntity({ ...m, entityType: 'Site' });
+          });
+          marker.addTo(layerGroup);
+        }
+      });
+    }
+
+  }, [mapLoaded, is3D, activeLayers, activeYear, mapTheme]);
+
+  // Clean up on component unmount
+  useEffect(() => {
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const found = markers.find(m => m.name.toLowerCase().includes(searchVal.toLowerCase()));
-    if (found) {
+    if (found && mapRef.current) {
       setSelectedEntity({ ...found, entityType: 'Site' });
-      const coords = getCoordinates(found.lat, found.lng);
-      setPanOffset({ x: 400 - coords.x, y: 250 - coords.y });
-      setZoomLevel(1.5);
+      mapRef.current.setView([found.lat, found.lng], 6);
     }
   };
 
-  const handleMouseDown = (e: React.MouseEvent<SVGSVGElement>) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
-  };
-
-  const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    if (!isDragging) return;
-    setPanOffset({
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y
-    });
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
   const handleZoom = (factor: number) => {
-    setZoomLevel(prev => Math.max(0.8, Math.min(3, prev * factor)));
+    if (mapRef.current) {
+      const zoom = mapRef.current.getZoom();
+      mapRef.current.setZoom(factor > 1 ? zoom + 1 : zoom - 1);
+    }
   };
 
   const handleEntityClick = (entity: any, type: string) => {
@@ -172,6 +309,39 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
           </div>
         </div>
 
+        {/* Map Theme Panel */}
+        {!is3D && (
+          <div className="p-4 rounded-xl glass-panel border border-gold-500/10 space-y-3">
+            <h4 className="text-[10px] font-mono text-gray-400 uppercase tracking-widest block">Cartographic Depiction Style</h4>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                onClick={() => setMapTheme('satellite')}
+                className={`py-1.5 rounded text-[10px] font-bold border transition-colors ${
+                  mapTheme === 'satellite' ? 'bg-gold-500 text-black border-gold-500' : 'bg-matte-900 border-gold-500/10 text-gray-400'
+                }`}
+              >
+                Satellite
+              </button>
+              <button
+                onClick={() => setMapTheme('terrain')}
+                className={`py-1.5 rounded text-[10px] font-bold border transition-colors ${
+                  mapTheme === 'terrain' ? 'bg-gold-500 text-black border-gold-500' : 'bg-matte-900 border-gold-500/10 text-gray-400'
+                }`}
+              >
+                Terrain
+              </button>
+              <button
+                onClick={() => setMapTheme('dark')}
+                className={`py-1.5 rounded text-[10px] font-bold border transition-colors ${
+                  mapTheme === 'dark' ? 'bg-gold-500 text-black border-gold-500' : 'bg-matte-900 border-gold-500/10 text-gray-400'
+                }`}
+              >
+                Dark Map
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Location Search */}
         <form onSubmit={handleSearch} className="flex gap-2">
           <div className="relative flex-1">
@@ -197,8 +367,8 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
               Time filter: {activeYear < 0 ? `${Math.abs(activeYear)} BCE` : `${activeYear} CE`}
             </div>
           )}
-          <p>The map outlines represent indigenous continental plates in a dark museum layout, centered by default on Nilotic and Sahelian African states.</p>
-          <p>Drag the map viewport to explore the globe. Hover and click dots to reveal details. Double click or scroll to modify coordinate resolutions.</p>
+          <p>This map interface utilizes live Google Satellite and Physical Terrain layers to portray accurate geological continent boundaries.</p>
+          <p>Drag the viewport to scan regions. Click circular hot-spots and trade networks to inspect historical files in the decolonial dossier drawer.</p>
         </div>
       </div>
 
@@ -225,157 +395,25 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
             activeYear={activeYear}
             onSelectEntity={handleEntityClick}
           />
+        ) : !mapLoaded ? (
+          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500 text-xs italic">
+            <span>Loading accurate Google Map grids...</span>
+          </div>
         ) : (
-          /* Canvas SVG */
-          <svg
-            className="w-full h-full cursor-grab active:cursor-grabbing bg-matte-950"
-            viewBox="0 0 800 500"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          >
-            {/* Main projection group */}
-            <g transform={`translate(${panOffset.x}, ${panOffset.y}) scale(${zoomLevel})`}>
-              {/* Styled World Outlines */}
-              <g className="fill-matte-900/80 stroke-matte-800/80 stroke-1">
-                <path d={continentPaths.eurasia} />
-                <path d={continentPaths.africa} />
-                <path d={continentPaths.northAmerica} />
-                <path d={continentPaths.southAmerica} />
-                <path d={continentPaths.australia} />
-              </g>
-
-              {/* Kingdoms Overlay */}
-              {activeLayers.includes('kingdoms') && (
-                <g>
-                  {/* Ancient Kemet (Egypt) */}
-                  <ellipse cx="440" cy="180" rx="35" ry="20" fill="url(#gold-radial)" className="stroke-gold-400 stroke-1 stroke-dashed cursor-pointer transition-opacity duration-300" opacity={isCivActiveInYear('kemet') ? 0.4 : 0.05} onClick={() => handleEntityClick(CIVILIZATIONS.find(c => c.id === 'kemet'), 'Kingdom')} />
-                  
-                  {/* Kush */}
-                  <ellipse cx="445" cy="225" rx="30" ry="25" fill="url(#gold-radial)" className="stroke-gold-400 stroke-1 cursor-pointer transition-opacity duration-300" opacity={isCivActiveInYear('kush') ? 0.4 : 0.05} onClick={() => handleEntityClick(CIVILIZATIONS.find(c => c.id === 'kush'), 'Kingdom')} />
-                  
-                  {/* Aksum */}
-                  <ellipse cx="475" cy="245" rx="20" ry="20" fill="url(#bronze-radial)" className="stroke-bronze-400 stroke-1 cursor-pointer transition-opacity duration-300" opacity={isCivActiveInYear('aksum') ? 0.4 : 0.05} onClick={() => handleEntityClick(CIVILIZATIONS.find(c => c.id === 'aksum'), 'Kingdom')} />
-                  
-                  {/* Mali & Songhai */}
-                  <ellipse cx="335" cy="245" rx="40" ry="30" fill="url(#gold-radial)" className="stroke-gold-400 stroke-1 cursor-pointer transition-opacity duration-300" opacity={isCivActiveInYear('mali') ? 0.4 : 0.05} onClick={() => handleEntityClick(CIVILIZATIONS.find(c => c.id === 'mali'), 'Kingdom')} />
-                  
-                  {/* Benin & Nok */}
-                  <ellipse cx="370" cy="275" rx="25" ry="25" fill="url(#bronze-radial)" className="stroke-bronze-400 stroke-1 cursor-pointer transition-opacity duration-300" opacity={isCivActiveInYear('benin') ? 0.4 : 0.05} onClick={() => handleEntityClick(CIVILIZATIONS.find(c => c.id === 'benin'), 'Kingdom')} />
-
-                  {/* Great Zimbabwe */}
-                  <ellipse cx="445" cy="380" rx="25" ry="20" fill="url(#gold-radial)" className="stroke-gold-400 stroke-1 cursor-pointer transition-opacity duration-300" opacity={isCivActiveInYear('great_zimbabwe') ? 0.4 : 0.05} onClick={() => handleEntityClick(CIVILIZATIONS.find(c => c.id === 'great_zimbabwe'), 'Kingdom')} />
-
-                  {/* Tiwanaku / Andean */}
-                  <ellipse cx="205" cy="355" rx="25" ry="35" fill="url(#bronze-radial)" className="stroke-bronze-400 stroke-1 cursor-pointer transition-opacity duration-300" opacity={isCivActiveInYear('tiwanaku') ? 0.4 : 0.05} onClick={() => handleEntityClick(CIVILIZATIONS.find(c => c.id === 'tiwanaku'), 'Kingdom')} />
-                </g>
-              )}
-
-              {/* Trade Routes Overlay */}
-              {activeLayers.includes('routes') && (
-                <g>
-                  {TRADE_ROUTES.map(route => {
-                    let pathD = `M ${getCoordinates(route.coordinates[0][0], route.coordinates[0][1]).x} ${getCoordinates(route.coordinates[0][0], route.coordinates[0][1]).y}`;
-                    for (let i = 1; i < route.coordinates.length; i++) {
-                      const nextPt = getCoordinates(route.coordinates[i][0], route.coordinates[i][1]);
-                      pathD += ` L ${nextPt.x} ${nextPt.y}`;
-                    }
-                    return (
-                      <path
-                        key={route.id}
-                        d={pathD}
-                        fill="none"
-                        className="stroke-bronze-500/70 stroke-1.5 stroke-dash-array hover:stroke-gold-400 transition-all cursor-pointer"
-                        strokeDasharray="4 4"
-                        opacity={isRouteActiveInYear(route) ? 1.0 : 0.08}
-                        onClick={() => handleEntityClick(route, 'Route')}
-                      />
-                    );
-                  })}
-                </g>
-              )}
-
-              {/* Migration Routes Overlay */}
-              {activeLayers.includes('migrations') && (
-                <g>
-                  {MIGRATION_ROUTES.map(route => {
-                    let pathD = `M ${getCoordinates(route.coordinates[0][0], route.coordinates[0][1]).x} ${getCoordinates(route.coordinates[0][0], route.coordinates[0][1]).y}`;
-                    for (let i = 1; i < route.coordinates.length; i++) {
-                      const nextPt = getCoordinates(route.coordinates[i][0], route.coordinates[i][1]);
-                      pathD += ` Q ${(getCoordinates(route.coordinates[i-1][0], route.coordinates[i-1][1]).x + nextPt.x)/2 + 20} ${(getCoordinates(route.coordinates[i-1][0], route.coordinates[i-1][1]).y + nextPt.y)/2 - 20} ${nextPt.x} ${nextPt.y}`;
-                    }
-                    return (
-                      <path
-                        key={route.id}
-                        d={pathD}
-                        fill="none"
-                        className="stroke-purple-500/50 stroke-2 hover:stroke-purple-400 transition-all cursor-pointer"
-                        opacity={isRouteActiveInYear(route) ? 1.0 : 0.08}
-                        onClick={() => handleEntityClick(route, 'Migration')}
-                      />
-                    );
-                  })}
-                </g>
-              )}
-
-              {/* Archaeological Site Pins */}
-              {activeLayers.includes('sites') && (
-                <g>
-                  {markers.map((marker, idx) => {
-                    const pt = getCoordinates(marker.lat, marker.lng);
-                    const isMarkerActive = activeYear === null || isCivActiveInYear(marker.civId);
-                    return (
-                      <g 
-                        key={idx} 
-                        className="cursor-pointer transition-opacity duration-300" 
-                        opacity={isMarkerActive ? 1.0 : 0.15}
-                        onClick={() => handleEntityClick(marker, 'Site')}
-                      >
-                        <circle
-                          cx={pt.x}
-                          cy={pt.y}
-                          r="5"
-                          className="fill-green-500 stroke-matte-950 stroke-1 hover:fill-gold-400 animate-pulse-glow"
-                        />
-                        <circle
-                          cx={pt.x}
-                          cy={pt.y}
-                          r="12"
-                          className="fill-transparent stroke-green-500/30 stroke-1 hover:stroke-gold-400/50"
-                        />
-                      </g>
-                    );
-                  })}
-                </g>
-              )}
-            </g>
-
-            {/* Gradients */}
-            <defs>
-              <radialGradient id="gold-radial">
-                <stop offset="0%" stopColor="#d4af37" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#d4af37" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="bronze-radial">
-                <stop offset="0%" stopColor="#cd7f32" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#cd7f32" stopOpacity="0" />
-              </radialGradient>
-            </defs>
-          </svg>
+          <div id="leaflet-map-explorer" className="w-full h-full min-h-[480px]" style={{ background: '#080808' }} />
         )}
 
-        {/* Selected Entity Detail Drawer */}
+        {/* Selected Entity Dossier Panel Overlay */}
         {selectedEntity && (
-          <div className="absolute bottom-4 left-4 right-4 md:right-auto md:w-[450px] p-5 rounded-xl glass-panel border border-gold-500/20 shadow-2xl backdrop-blur-md animate-fade-in z-20">
+          <div className="absolute bottom-4 left-4 right-4 md:right-auto md:w-[400px] p-5 rounded-xl glass-panel border border-gold-500/20 shadow-2xl backdrop-blur-md z-20">
             <div className="flex items-start justify-between border-b border-gold-500/10 pb-3">
               <div>
                 <span className="text-[9px] uppercase tracking-widest text-bronze-400 font-mono font-bold">
-                  {selectedEntity.entityType || 'Archaeological Entity'}
+                  {selectedEntity.entityType || 'Archaeological Record'}
                 </span>
-                <h4 className="text-base font-serif text-white font-bold">{selectedEntity.name}</h4>
+                <h4 className="text-base font-serif text-white font-bold">{selectedEntity.name || selectedEntity.title}</h4>
               </div>
-              <button
+              <button 
                 onClick={() => setSelectedEntity(null)}
                 className="p-1 rounded hover:bg-gold-500/10 text-gray-500 hover:text-white"
               >
