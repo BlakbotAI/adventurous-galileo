@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../services/db';
 import { useAuth } from '../contexts/AuthContext';
-import { Plus, Edit2, Trash2, ShieldCheck, X, AlertTriangle } from 'lucide-react';
+import { Plus, Edit2, Trash2, ShieldCheck, X, AlertTriangle, Search, Loader2, Globe, Crown, Scroll } from 'lucide-react';
 import type { Civilization, Artifact, HistoricalFigure, EvidenceTier, DBQuizQuestion } from '../types/database';
+import { searchWikipedia, getWikipediaPageDetails } from '../services/wikipedia';
 
 export const CuratorPanel: React.FC = () => {
   const { role } = useAuth();
-  const [activeTab, setActiveTab] = useState<'civs' | 'arts' | 'figs' | 'quizzes'>('civs');
+  const [activeTab, setActiveTab] = useState<'civs' | 'arts' | 'figs' | 'quizzes' | 'wiki'>('civs');
 
   const [civilizations, setCivilizations] = useState<Civilization[]>([]);
   const [artifacts, setArtifacts] = useState<Artifact[]>([]);
@@ -63,6 +64,17 @@ export const CuratorPanel: React.FC = () => {
   const [quizExplanation, setQuizExplanation] = useState('');
   const [quizCategory, setQuizCategory] = useState('');
 
+  // Wikipedia Search & Coordinates States
+  const [wikiQuery, setWikiQuery] = useState('');
+  const [wikiType, setWikiType] = useState<'civ' | 'art' | 'fig'>('civ');
+  const [wikiResults, setWikiResults] = useState<any[]>([]);
+  const [wikiSearchLoading, setWikiSearchLoading] = useState(false);
+  const [wikiDetailLoading, setWikiDetailLoading] = useState(false);
+  const [wikiError, setWikiError] = useState<string | null>(null);
+
+  const [civLatitude, setCivLatitude] = useState<number | ''>('');
+  const [civLongitude, setCivLongitude] = useState<number | ''>('');
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -95,6 +107,8 @@ export const CuratorPanel: React.FC = () => {
       setCivTier(civ.evidenceTier);
       setCivAfrica(civ.africaCentered);
       setCivImg(civ.imageUrl || '');
+      setCivLatitude(civ.latitude !== undefined ? civ.latitude : '');
+      setCivLongitude(civ.longitude !== undefined ? civ.longitude : '');
     } else if (type === 'art') {
       const art = entity as Artifact;
       setArtName(art.name);
@@ -144,6 +158,8 @@ export const CuratorPanel: React.FC = () => {
     setCivTier('Established');
     setCivAfrica(true);
     setCivImg('');
+    setCivLatitude('');
+    setCivLongitude('');
 
     setArtName('');
     setArtCivId('');
@@ -210,7 +226,9 @@ export const CuratorPanel: React.FC = () => {
       evidenceNote: civEvidence,
       evidenceTier: civTier,
       africaCentered: civAfrica,
-      imageUrl: civImg || 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&auto=format&fit=crop&q=80'
+      imageUrl: civImg || 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&auto=format&fit=crop&q=80',
+      latitude: civLatitude !== '' ? Number(civLatitude) : undefined,
+      longitude: civLongitude !== '' ? Number(civLongitude) : undefined
     };
     db.saveCivilization(newCiv);
     setIsEditing(false);
@@ -287,6 +305,84 @@ export const CuratorPanel: React.FC = () => {
     fetchData();
   };
 
+  const handleWikiSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!wikiQuery.trim()) return;
+    setWikiSearchLoading(true);
+    setWikiError(null);
+    setWikiResults([]);
+    try {
+      const results = await searchWikipedia(wikiQuery);
+      setWikiResults(results);
+      if (results.length === 0) {
+        setWikiError('No Wikipedia pages matched your query. Try a different search term.');
+      }
+    } catch (err) {
+      setWikiError('Failed to search Wikipedia. Please check your network connection.');
+    } finally {
+      setWikiSearchLoading(false);
+    }
+  };
+
+  const handleWikiSelect = async (title: string) => {
+    setWikiDetailLoading(true);
+    setWikiError(null);
+    try {
+      const details = await getWikipediaPageDetails(title);
+      setIsEditing(true);
+      setEditingEntityId(null);
+      clearForms();
+      
+      if (wikiType === 'civ') {
+        setCivName(details.title);
+        setCivRegion('Global');
+        setCivPeriod('Pre-colonial');
+        setCivStartYear(1000);
+        setCivEndYear(1500);
+        setCivNarrative('Unverified representation. Rectification needed.');
+        setCivEvidence(details.extract.substring(0, 500) + '...');
+        setCivTier('Scholarly Consensus');
+        setCivAfrica(true);
+        setCivImg(details.imageUrl || '');
+        if (details.coordinates) {
+          setCivLatitude(details.coordinates.lat);
+          setCivLongitude(details.coordinates.lon);
+        }
+      } else if (wikiType === 'art') {
+        setArtName(details.title);
+        const civList = db.getCivilizations();
+        setArtCivId(civList[0]?.id || 'kemet');
+        setArtDate('Pre-colonial');
+        setArtStartYear(1000);
+        setArtMaterial('Clay, Bronze, Stone');
+        setArtMuseum('Referenced in Wikipedia');
+        setArtLoc('In Situ / Global Museum');
+        setArtScore(7);
+        setArtContext(details.extract.substring(0, 500) + '...');
+        setArtDiscovery('Documented on Wikipedia.');
+        setArtDating('Typological Context');
+        setArtDebate('Repatriation and ownership records are currently under scholarly review.');
+        setArtImg(details.imageUrl || '');
+      } else if (wikiType === 'fig') {
+        setFigName(details.title);
+        setFigTitle('Historical Leader / Scholarly Figure');
+        const civList = db.getCivilizations();
+        setFigCivId(civList[0]?.id || 'kemet');
+        setFigPeriod('Pre-colonial');
+        setFigStartYear(1000);
+        setFigBio(details.extract.substring(0, 500) + '...');
+        setFigAchievements('Documented biography achievements in cultural governance.');
+        setFigImg(details.imageUrl || '');
+      }
+      
+      setActiveTab(wikiType === 'civ' ? 'civs' : wikiType === 'art' ? 'arts' : 'figs');
+    } catch (err) {
+      setWikiError('Failed to fetch details for this page.');
+    } finally {
+      setWikiDetailLoading(false);
+    }
+  };
+
   if (role !== 'Curator' && role !== 'Admin') {
     return (
       <div className="p-8 rounded-xl bg-red-950/20 border border-red-500/20 text-center max-w-md mx-auto space-y-4">
@@ -323,7 +419,7 @@ export const CuratorPanel: React.FC = () => {
         <>
           {/* Tabs */}
           <div className="flex gap-2 flex-wrap">
-            {(['civs', 'arts', 'figs', 'quizzes'] as const).map(tab => (
+            {(['civs', 'arts', 'figs', 'quizzes', 'wiki'] as const).map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -333,7 +429,7 @@ export const CuratorPanel: React.FC = () => {
                     : 'bg-matte-900 border-gold-500/10 hover:border-gold-500/20 text-gray-400'
                 }`}
               >
-                {tab === 'civs' ? 'Civilization Dossiers' : tab === 'arts' ? 'Artifact Registry' : tab === 'figs' ? 'Historical Leaders' : 'Quiz Question Pool'}
+                {tab === 'civs' ? 'Civilization Dossiers' : tab === 'arts' ? 'Artifact Registry' : tab === 'figs' ? 'Historical Leaders' : tab === 'quizzes' ? 'Quiz Question Pool' : 'Wikipedia Discovery'}
               </button>
             ))}
           </div>
@@ -414,6 +510,77 @@ export const CuratorPanel: React.FC = () => {
                 ))}
               </div>
             )}
+
+            {activeTab === 'wiki' && (
+              <div className="space-y-4">
+                <form onSubmit={handleWikiSearch} className="flex gap-2">
+                  <select
+                    value={wikiType}
+                    onChange={(e) => setWikiType(e.target.value as any)}
+                    className="px-3 py-2 rounded-lg bg-matte-900 border border-gold-500/20 text-gray-200 focus:outline-none text-xs"
+                  >
+                    <option value="civ">Civilization</option>
+                    <option value="art">Artifact</option>
+                    <option value="fig">Historical Figure</option>
+                  </select>
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      placeholder={`Search Wikipedia for ${wikiType === 'civ' ? 'civilizations...' : wikiType === 'art' ? 'artifacts...' : 'figures...'}`}
+                      value={wikiQuery}
+                      onChange={(e) => setWikiQuery(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 rounded-lg glass-input text-gray-200 text-xs"
+                    />
+                    <Search className="absolute left-3 top-2.5 size-3.5 text-gray-500" />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={wikiSearchLoading}
+                    className="px-5 py-2 bg-gold-600 hover:bg-gold-500 text-black font-bold text-xs rounded-lg flex items-center gap-1.5 transition-all"
+                  >
+                    {wikiSearchLoading ? <Loader2 className="animate-spin size-3.5" /> : <Search size={14} />}
+                    Search
+                  </button>
+                </form>
+
+                {wikiError && (
+                  <div className="p-3 bg-red-950/20 border border-red-500/20 text-red-400 text-xs rounded-lg">
+                    {wikiError}
+                  </div>
+                )}
+
+                {wikiDetailLoading && (
+                  <div className="py-12 text-center text-gray-400 text-xs flex justify-center items-center gap-2">
+                    <Loader2 className="animate-spin size-4 text-gold-500" />
+                    Fetching page details, images, and coordinates...
+                  </div>
+                )}
+
+                {!wikiDetailLoading && wikiResults.length > 0 && (
+                  <div className="divide-y divide-gold-500/5">
+                    {wikiResults.map(result => (
+                      <div key={result.pageid} className="py-3 flex justify-between items-center gap-4 text-xs">
+                        <div className="flex-1">
+                          <h4 className="font-serif text-white font-semibold flex items-center gap-1.5">
+                            {wikiType === 'civ' ? <Globe size={12} className="text-gold-500" /> : wikiType === 'art' ? <Scroll size={12} className="text-bronze-400" /> : <Crown size={12} className="text-yellow-500" />}
+                            {result.title}
+                          </h4>
+                          <p className="text-[10px] text-gray-400 mt-1 font-light leading-relaxed">
+                            {result.snippet}...
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleWikiSelect(result.title)}
+                          className="px-3 py-1.5 rounded bg-matte-900 border border-gold-500/25 hover:bg-gold-500/10 text-gold-400 font-semibold"
+                        >
+                          Select & Import
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </>
       ) : (
@@ -473,6 +640,17 @@ export const CuratorPanel: React.FC = () => {
               <div className="space-y-1">
                 <label className="text-gray-400">Illustration Image URL</label>
                 <input type="text" value={civImg} onChange={(e) => setCivImg(e.target.value)} className="w-full px-3 py-2 rounded-lg glass-input text-gray-200" />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-gray-400">Latitude (optional)</label>
+                  <input type="number" step="any" value={civLatitude} onChange={(e) => setCivLatitude(e.target.value === '' ? '' : Number(e.target.value))} className="w-full px-3 py-2 rounded-lg glass-input text-gray-200" placeholder="e.g. 13.4" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-gray-400">Longitude (optional)</label>
+                  <input type="number" step="any" value={civLongitude} onChange={(e) => setCivLongitude(e.target.value === '' ? '' : Number(e.target.value))} className="w-full px-3 py-2 rounded-lg glass-input text-gray-200" placeholder="e.g. -72.5" />
+                </div>
               </div>
 
               <div className="flex justify-end gap-2 text-xs">

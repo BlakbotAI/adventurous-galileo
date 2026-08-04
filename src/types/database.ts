@@ -41,6 +41,8 @@ export interface Civilization {
   africaCentered: boolean;
   imageUrl?: string;
   wikipediaUrl?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface Artifact {

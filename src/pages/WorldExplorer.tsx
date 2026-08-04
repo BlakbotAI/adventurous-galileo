@@ -164,6 +164,8 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
         { id: 'kongo', center: [-6.1, 14.2], radius: 450000, color: '#cd7f32' }
       ];
 
+      const kingdomsMap = new Map(kingdoms.map(k => [k.id, k]));
+
       kingdoms.forEach(k => {
         if (isCivActiveInYear(k.id)) {
           const civData = CIVILIZATIONS.find(c => c.id === k.id);
@@ -179,6 +181,25 @@ export const WorldExplorer: React.FC<WorldExplorerProps> = ({ activeYear = null 
             setSelectedEntity({ ...civData, entityType: 'Kingdom' });
           });
           circle.addTo(layerGroup);
+        }
+      });
+
+      CIVILIZATIONS.forEach(c => {
+        if (!kingdomsMap.has(c.id) && c.latitude !== undefined && c.longitude !== undefined) {
+          if (isCivActiveInYear(c.id)) {
+            const circle = L.circle([c.latitude, c.longitude], {
+              radius: 400000,
+              color: '#d4af37',
+              fillColor: '#d4af37',
+              fillOpacity: 0.22,
+              weight: 1.5,
+              dashArray: '4, 4'
+            });
+            circle.on('click', () => {
+              setSelectedEntity({ ...c, entityType: 'Kingdom' });
+            });
+            circle.addTo(layerGroup);
+          }
         }
       });
     }
