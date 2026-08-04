@@ -17,6 +17,8 @@ import CuratorPanel from './pages/CuratorPanel';
 import AuthPage from './pages/Auth';
 import { ExcavationSimulator } from './pages/ExcavationSimulator';
 import { ResearchWorkspace } from './pages/ResearchWorkspace';
+import { ComparativeAnalysis } from './pages/ComparativeAnalysis';
+import { PeerReview } from './pages/PeerReview';
 
 function AppContent() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -86,6 +88,10 @@ function AppContent() {
         return <ExcavationSimulator />;
       case 'workspace':
         return <ResearchWorkspace />;
+      case 'compare':
+        return <ComparativeAnalysis />;
+      case 'review':
+        return <PeerReview />;
       case 'learning':
         return <LearningCenter />;
       case 'collections':

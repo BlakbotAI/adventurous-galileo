@@ -32,6 +32,69 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ activeYear = nul
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
+  // Custom node states
+  const [customNodes, setCustomNodes] = useState<GraphNode[]>(() => {
+    const raw = localStorage.getItem('hios_custom_graph_nodes');
+    return raw ? JSON.parse(raw) : [];
+  });
+  const [customEdges, setCustomEdges] = useState<GraphEdge[]>(() => {
+    const raw = localStorage.getItem('hios_custom_graph_edges');
+    return raw ? JSON.parse(raw) : [];
+  });
+
+  // Form states
+  const [formLabel, setFormLabel] = useState('');
+  const [formType, setFormType] = useState<GraphNode['type']>('Civilization');
+  const [formDesc, setFormDesc] = useState('');
+  const [formTier, setFormTier] = useState<GraphNode['evidenceTier']>('Established');
+  const [formStart, setFormStart] = useState('-1000');
+  const [formEnd, setFormEnd] = useState('500');
+  const [formConnectId, setFormConnectId] = useState('');
+
+  const handleAddCustomNode = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formLabel.trim() || !formConnectId) return;
+
+    const newId = `custom_${Date.now()}`;
+    const angle = Math.random() * Math.PI * 2;
+    const newNode: GraphNode = {
+      id: newId,
+      label: formLabel,
+      type: formType,
+      x: 400 + Math.cos(angle) * 150,
+      y: 250 + Math.sin(angle) * 120,
+      description: formDesc || 'Custom historical node added by scholar.',
+      evidenceTier: formTier,
+      startYear: parseInt(formStart) || undefined,
+      endYear: parseInt(formEnd) || undefined
+    };
+
+    const newEdge: GraphEdge = {
+      source: formConnectId,
+      target: newId
+    };
+
+    const updatedNodes = [...customNodes, newNode];
+    const updatedEdges = [...customEdges, newEdge];
+
+    setCustomNodes(updatedNodes);
+    setCustomEdges(updatedEdges);
+
+    localStorage.setItem('hios_custom_graph_nodes', JSON.stringify(updatedNodes));
+    localStorage.setItem('hios_custom_graph_edges', JSON.stringify(updatedEdges));
+
+    // Clear form
+    setFormLabel('');
+    setFormDesc('');
+  };
+
+  const handleClearCustomNodes = () => {
+    setCustomNodes([]);
+    setCustomEdges([]);
+    localStorage.removeItem('hios_custom_graph_nodes');
+    localStorage.removeItem('hios_custom_graph_edges');
+  };
+
   const civilizations = db.getCivilizations();
   const artifacts = db.getArtifacts();
   const figures = db.getFigures();
@@ -113,6 +176,10 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ activeYear = nul
       edges.push({ source: a.civilizationId, target: a.id });
     }
   });
+
+  // Inject custom nodes and edges
+  customNodes.forEach(n => nodes.push(n));
+  customEdges.forEach(e => edges.push(e));
 
   // Helper: check if nodes are neighbors
   const areNeighbors = (id1: string, id2: string) => {
@@ -407,6 +474,122 @@ export const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ activeYear = nul
           <button onClick={() => setZoom(prev => Math.min(2.5, prev + 0.1))} className="p-2 rounded bg-matte-900/90 border border-gold-500/20 text-gold-500 hover:bg-matte-800 transition-colors">+</button>
           <button onClick={() => setZoom(prev => Math.max(0.6, prev - 0.1))} className="p-2 rounded bg-matte-900/90 border border-gold-500/20 text-gold-500 hover:bg-matte-800 transition-colors">-</button>
           <button onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }} className="px-3 py-2 text-xs rounded bg-matte-900/90 border border-gold-500/20 text-gold-500 hover:bg-matte-800 transition-colors">Reset Camera</button>
+        </div>
+
+        {/* Custom Node Injector Panel Overlay (Floating Right) */}
+        <div className="absolute top-4 right-4 w-72 max-h-[calc(100%-32px)] overflow-y-auto p-4 rounded-xl glass-panel border border-gold-500/10 shadow-2xl backdrop-blur-md z-20 flex flex-col gap-3 text-[10px] bg-matte-950/80 scrollbar-thin">
+          <div className="flex justify-between items-center border-b border-gold-500/10 pb-1.5">
+            <h4 className="text-xs font-serif text-gold-500 font-bold uppercase tracking-wider flex items-center gap-1.5">
+              <Cpu size={12} /> Inject Node
+            </h4>
+            {customNodes.length > 0 && (
+              <button
+                onClick={handleClearCustomNodes}
+                className="text-[9px] text-red-500 hover:text-red-400 font-mono"
+              >
+                Clear All
+              </button>
+            )}
+          </div>
+          
+          <form onSubmit={handleAddCustomNode} className="space-y-2">
+            <div>
+              <label className="text-gray-400 block mb-1">Node Label / Title</label>
+              <input
+                type="text"
+                placeholder="e.g. Timbuktu Astrolabe"
+                required
+                value={formLabel}
+                onChange={(e) => setFormLabel(e.target.value)}
+                className="w-full p-1.5 rounded bg-matte-900 border border-gold-500/10 text-gray-200"
+              />
+            </div>
+
+            <div>
+              <label className="text-gray-400 block mb-1">Category Type</label>
+              <select
+                value={formType}
+                onChange={(e) => setFormType(e.target.value as GraphNode['type'])}
+                className="w-full p-1.5 rounded bg-matte-900 border border-gold-500/10 text-gray-200"
+              >
+                <option value="Civilization">Civilization</option>
+                <option value="Person">Person</option>
+                <option value="Artifact">Artifact</option>
+                <option value="Route">Route</option>
+                <option value="Document">Document</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-gray-400 block mb-1">Dossier Summary</label>
+              <textarea
+                placeholder="Details of custom historical artifact or figure..."
+                rows={2}
+                value={formDesc}
+                onChange={(e) => setFormDesc(e.target.value)}
+                className="w-full p-1.5 rounded bg-matte-900 border border-gold-500/10 text-gray-200 resize-none"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="text-gray-400 block mb-1">Start Year</label>
+                <input
+                  type="number"
+                  value={formStart}
+                  onChange={(e) => setFormStart(e.target.value)}
+                  className="w-full p-1.5 rounded bg-matte-900 border border-gold-500/10 text-gray-200"
+                />
+              </div>
+              <div>
+                <label className="text-gray-400 block mb-1">End Year</label>
+                <input
+                  type="number"
+                  value={formEnd}
+                  onChange={(e) => setFormEnd(e.target.value)}
+                  className="w-full p-1.5 rounded bg-matte-900 border border-gold-500/10 text-gray-200"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-gray-400 block mb-1">Authenticity Rating</label>
+              <select
+                value={formTier}
+                onChange={(e) => setFormTier(e.target.value as GraphNode['evidenceTier'])}
+                className="w-full p-1.5 rounded bg-matte-900 border border-gold-500/10 text-gray-200"
+              >
+                <option value="Established">Established</option>
+                <option value="Scholarly Consensus">Scholarly Consensus</option>
+                <option value="Contested">Contested</option>
+                <option value="Speculative">Speculative</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-gold-500 block mb-1 font-bold">Connect To Existing Node</label>
+              <select
+                required
+                value={formConnectId}
+                onChange={(e) => setFormConnectId(e.target.value)}
+                className="w-full p-1.5 rounded bg-matte-900 border border-gold-500/20 text-gray-200 font-semibold"
+              >
+                <option value="">-- Select target node --</option>
+                {nodes.filter(n => !n.id.startsWith('custom_')).map(n => (
+                  <option key={n.id} value={n.id}>
+                    {n.label} ({n.type})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-2 mt-2 rounded bg-gold-600 hover:bg-gold-500 text-black font-bold font-mono transition-colors"
+            >
+              Inject To Graph
+            </button>
+          </form>
         </div>
 
         {/* Selected Node Panel Overlay */}

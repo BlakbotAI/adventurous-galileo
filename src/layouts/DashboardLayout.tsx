@@ -22,7 +22,9 @@ import {
   LogIn,
   LogOut,
   Compass,
-  BookOpen
+  BookOpen,
+  GitMerge,
+  CheckSquare
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -64,8 +66,10 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     { id: 'figures', label: 'Historical Figures', icon: Crown },
     { id: 'timeline', label: 'Interactive Timeline', icon: Clock },
     { id: 'graph', label: 'Knowledge Graph', icon: Share2 },
+    { id: 'compare', label: 'Comparative Analysis', icon: GitMerge },
     { id: 'ai-historian', label: 'AI Historian', icon: MessageSquare },
     { id: 'workspace', label: 'Research Workspace', icon: BookOpen },
+    { id: 'review', label: 'Peer-Review Board', icon: CheckSquare },
     { id: 'library', label: 'Research Library', icon: Library },
     { id: 'learning', label: 'Learning Center', icon: GraduationCap },
     { id: 'collections', label: 'Saved Collections', icon: Star },
