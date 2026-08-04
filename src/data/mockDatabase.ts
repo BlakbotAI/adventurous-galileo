@@ -259,7 +259,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Excavations at Kerma and Meroe prove Kush was an independent, technologically advanced state. Meroe was one of the largest iron-working centers in the ancient world, developing its own Meroitic script (yet undeciphered) and distinct matrilineal succession patterns.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1600577916048-804c9191e36c?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/kush.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Kingdom_of_Kush'
   },
   {
@@ -284,7 +284,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'The Kouroukan Fuga (Mali Constitution, 1235 CE) codified human rights, occupational guilds, and division of powers. Timbuktu housed over 700,000 cataloged scientific and literary manuscripts written by local scholars.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/mali.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Mali_Empire'
   },
   {
@@ -309,7 +309,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: "Aksum was the first African state to mint its own gold coinage bearing its rulers' effigies, demonstrating complete monetary sovereignty. It controlled trade throughout the Red Sea and Gulf of Aden, and directly intervened militarily in Southern Arabia.",
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1566121318599-23214c77c617?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/aksum.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Kingdom_of_Aksum'
   },
   {
@@ -334,7 +334,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Archaeological excavations prove Great Zimbabwe was constructed by indigenous Bantu-speaking Shona ancestors. Artifacts include local gold smelting crucibles along with imported Persian glazed pottery and Chinese Ming celadon.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/great_zimbabwe.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Great_Zimbabwe'
   },
   {
@@ -359,7 +359,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Benin City featured a planned grid layout, street lighting (torches), and the massive Benin Moat (one of the largest earthworks in pre-colonial history). The Benin Bronzes display metallurgical mastery of copper casting unmatched in Renaissance Europe.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/benin.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Kingdom_of_Benin'
   },
   {
@@ -384,7 +384,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Kongo had a highly centralized administrative structure divided into six provinces, with a currency system managed by the crown, and wrote extensive diplomatic correspondence in Portuguese and Latin to the Pope and European kings.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/kongo.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Kingdom_of_Kongo'
   },
   {
@@ -409,7 +409,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Direct radiocarbon dates of iron slag in Taruga furnace tuyeres prove independent iron smelting in Nok since 1000 BCE, pre-dating Carthage contacts.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1599733589046-9b8308b5b50d?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/nok.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Nok_culture'
   },
   {
@@ -434,7 +434,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: "Caral shows massive stone pyramid mounds dating to 3000 BCE, contemporary with Egypt's Old Kingdom. It thrived on a diet of marine anchovies and squash, proving civilization did not require grain crop surplus.",
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1569173112611-52a7cd38bea9?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/caral.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Caral'
   },
   {
@@ -459,7 +459,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Tiwanaku stone structures utilize unique interlocking blocks connected by poured molten copper-arsenic bronze cramps, a highly sophisticated metallurgical and architectural process.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1587570255959-1e37bc559cc2?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/tiwanaku.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Tiwanaku'
   },
   {
@@ -484,7 +484,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Graves on Mapungubwe Hill demonstrate distinct class segregation, with the royal graves containing thousands of gold beads, bowls, and the famous golden rhino, indicating clear class divisions and highly developed craft specialization.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/mapungubwe.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Kingdom_of_Mapungubwe'
   },
   {
@@ -509,7 +509,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'The Khipu accounting system utilized positional base-10 knots and color coding to compile complex censuses, coordinate military supplies, and record dynastic chronicles, showing numerical and historical literacy.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/inca.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Inca_Empire'
   },
   {
@@ -534,7 +534,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Tenochtitlan was a clean, planned grid city built on a lake, supporting 200,000 residents (larger than London or Madrid in 1519). Merchant guilds (Pochteca) conducted inter-regional trade and gathered intelligence.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1518638150341-f706e86654de?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/mexica.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Aztecs'
   },
   {
@@ -559,7 +559,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Moche metalworkers invented electrochemical replacement gilding to coat copper in thin gold layers, and pioneered casting copper-gold alloys (Tumbaga) centuries before European metallurgy guilds.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/moche.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Moche_culture'
   },
   {
@@ -584,7 +584,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Excavated bronze artifacts at Igbo-Ukwu date to the 9th Century CE, pre-dating any European contact by 500 years. Their unique composition utilizes high-lead copper alloys and represents independent technological innovation.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1599733589046-9b8308b5b50d?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/igbo_ukwu.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Igbo-Ukwu'
   },
   {
@@ -609,7 +609,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'The Asante utilized brass weights (Abrammuo) mapped to a standardized measurement system to manage commercial exchange of gold dust, supporting a highly centralized state finance administration.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/asante.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Ashanti_Empire'
   },
   {
@@ -634,7 +634,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Oyo functioned as a constitutional system: the Alaafin (King) shared power with the Oyomesi (council of seven state chiefs), who had the authority to veto the king and request his suicide if he breached the constitution.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/oyo.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Oyo_Empire'
   },
   {
@@ -659,7 +659,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Jolof was founded as a voluntary confederacy of states (Waalo, Cayor, Baol) united under Ndiadiane Ndiaye, creating a standardized judicial and military council that successfully governed maritime trade.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1582298538104-fe2e74c27f59?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/jolof.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Jolof_Empire'
   },
   {
@@ -684,7 +684,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'City-states like Kano and Katsina maintained detailed dynastic records (e.g. Kano Chronicle). Kano was a major textile manufacturing center, featuring specialized indigo-dye pits active since the 11th century.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/hausa.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Hausa_Kingdoms'
   },
   {
@@ -709,7 +709,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Excavations at Mdaga show continuous urban occupation since 600 BCE. Sao sites yielded thousands of fine terracotta figurines and advanced copper alloy castings dating to the 12th century.',
     evidenceTier: 'Established',
     africaCentered: true,
-    imageUrl: 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/sao.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Sao_civilisation'
   },
   {
@@ -734,7 +734,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Taíno navigated ocean-going canoes carrying up to 150 people between South America and Florida. They worked Guanín, a unique gold-copper-silver alloy, demonstrating sophisticated metal sourcing.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/taino.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Ta%C3%ADno'
   },
   {
@@ -759,7 +759,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'The Cyrus Cylinder (539 BCE) declares religious freedom, outlaws slavery, and allows displaced populations to return home, representing an early codification of human rights.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/achaemenid.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Achaemenid_Empire'
   },
   {
@@ -784,7 +784,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Srivijaya housed large international universities (like Palembang) where Chinese pilgrims studied Sanskrit translation, proving it was a core intellectual center of the Buddhist world.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/srivijaya.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Srivijaya'
   },
   {
@@ -809,7 +809,7 @@ export const CIVILIZATIONS: Civilization[] = [
     evidenceNote: 'Rajendra Chola I launched a massive naval expedition in 1025 CE, defeating the Srivijayan fleet to keep trade lanes open to China. Merchant guilds like the Ayyavole maintained trade ports as far as Canton and East Africa.',
     evidenceTier: 'Established',
     africaCentered: false,
-    imageUrl: 'https://images.unsplash.com/photo-1566121318599-23214c77c617?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/civilizations/chola.jpg',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Chola_dynasty'
   }
 ];
@@ -826,7 +826,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Swaziland National Museum',
     currentLocation: 'Mbabane, Eswatini',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_lebombo.jpg',
     historicalContext: 'A small baboon fibula with 29 distinct notched marks, discovered in the Lebombo Mountains in the 1970s.',
     discoveryNotes: 'Discovered during excavations in Lebombo Cave. It resembles calendar sticks still used by San communities today.',
     datingMethod: 'Radiocarbon dating of organic material in the surrounding archaeological layers.',
@@ -931,7 +931,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'National Museum of Nigeria',
     currentLocation: 'Jos, Nigeria',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_nok_terracotta.jpg',
     historicalContext: 'A hollow-cast terracotta head depicting a figure with large triangular eyes, perforated pupils, and elaborate hair folds.',
     discoveryNotes: 'Dug up during tin mining in Nok village, Kaduna State, Nigeria.',
     datingMethod: 'Thermoluminescence (TL) and stratigraphic carbon dating of clay grains.',
@@ -952,7 +952,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Museo de Arqueología de Caral',
     currentLocation: 'Lima, Peru',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_caral_khipu.jpg',
     historicalContext: 'A collection of knotted cords of varying lengths and colors, used to record numerical inventories or calendar dates.',
     discoveryNotes: 'Uncovered in a ceremonial gallery at Caral by Ruth Shady Solís.',
     datingMethod: 'Radiocarbon dating of organic cotton fibers.',
@@ -973,7 +973,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Machu Picchu Archaeological Park',
     currentLocation: 'Machu Picchu, Peru',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_inca_intihuatana.jpg',
     historicalContext: 'A carved monolithic pillar protruding from a granite platform, functioning as an astronomical calendar or clock to predict solstices.',
     discoveryNotes: 'Found during early expeditions to Machu Picchu in the 20th century.',
     datingMethod: 'Architectural stylistic mapping corresponding to Pachacuti\'s construction projects.',
@@ -992,7 +992,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'National Museum of Anthropology',
     currentLocation: 'Mexico City, Mexico',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1518638150341-f706e86654de?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_mexica_sunstone.jpg',
     historicalContext: 'A massive carved basalt disk displaying cyclical calendar glyphs, the face of the solar deity Tonatiuh, and historical cosmogonic eras.',
     discoveryNotes: 'Discovered in 1790 during repairs on the Mexico City Cathedral, buried under the Zocalo.',
     datingMethod: 'Epigraphical dating of the reign of Axayacatl or Moctezuma II.',
@@ -1011,7 +1011,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Larco Museum',
     currentLocation: 'Lima, Peru',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_moche_portrait.jpg',
     historicalContext: 'Highly realistic slip-painted ceramic stirrup-spout vessel depicting the detailed facial features of a specific Moche ruler.',
     discoveryNotes: 'Excavated from elite tombs in the Moche Valley.',
     datingMethod: 'Thermoluminescence dating of pottery shards.',
@@ -1030,7 +1030,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'National Museum of Nigeria',
     currentLocation: 'Lagos, Nigeria',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1599733589046-9b8308b5b50d?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_igbo_bronze_pot.jpg',
     historicalContext: 'A masterfully cast bronze vessel enclosed in an intricate web of cast bronze ropes, representing the pinnacle of lost-wax casting.',
     discoveryNotes: 'Uncovered in a burial chamber by Thurstan Shaw in Igbo-Ukwu.',
     datingMethod: 'Radiocarbon dating of surrounding organic remains.',
@@ -1049,7 +1049,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Asante Royal Palace (held in secret custody)',
     currentLocation: 'Kumasi, Ghana',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_asante_golden_stool.jpg',
     historicalContext: 'The sacred golden throne of the Asante people, believed to have floated down from the heavens to unify the Akan clans under Osei Tutu I.',
     discoveryNotes: 'Believed to have descended on Kumasi in 1701, guarded fiercely from British seizure.',
     datingMethod: 'Oral tradition and historical records of dynastic unification.',
@@ -1068,7 +1068,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'National Museum of Nigeria',
     currentLocation: 'Ibadan, Nigeria',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_oyo_sword.jpg',
     historicalContext: 'A double-edged forged iron sword with an ornate cast brass hilt representing the god Shango, used by Oyo cavalry officers.',
     discoveryNotes: 'Recovered from royal armories in Oyo-Ile.',
     datingMethod: 'Metallurgical profiling and stylistic design comparison.',
@@ -1087,7 +1087,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Musée National de N\'Djamena',
     currentLocation: "N'Djamena, Chad",
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_sao_urn.jpg',
     historicalContext: 'A massive clay storage jar modeled with human facial features, used for ceremonial burials in the Lake Chad basin.',
     discoveryNotes: 'Excavated from mud-walled city mounds in the Chari River delta.',
     datingMethod: 'Radiocarbon carbon-date calibration of interior residues.',
@@ -1106,7 +1106,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Museo del Hombre Dominicano',
     currentLocation: 'Santo Domingo, Dominican Republic',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1543783207-ec64e4d95325?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_taino_zemi.jpg',
     historicalContext: 'A three-pointed stone sculpture representing a Zemi deity, used to ensure agricultural fertility and coordinate seasonal rains.',
     discoveryNotes: 'Recovered from agricultural mounds (conucos) in Puerto Rico.',
     datingMethod: 'Obsidian hydration and stylistic mapping.',
@@ -1125,7 +1125,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'British Museum (held)',
     currentLocation: 'London, United Kingdom',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1507608869274-d3177c8bb4c7?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_oxus_chariot.jpg',
     historicalContext: 'A miniature model of a four-horse chariot with two figures in Persian attire, found as part of the Oxus Treasure.',
     discoveryNotes: 'Discovered in 1877 on the banks of the Oxus River (Tajikistan).',
     datingMethod: 'Stylistic mapping corresponding to early Achaemenid royal reliefs.',
@@ -1144,7 +1144,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'National Museum Bangkok',
     currentLocation: 'Bangkok, Thailand',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_srivijaya_buddha.jpg',
     historicalContext: 'A four-armed gilded bronze figure of the Bodhisattva Avalokiteshvara, showing distinct Srivijayan artistic blend of Indian Pala and local elements.',
     discoveryNotes: 'Recovered from Chaiya, Southern Thailand, a major regional Srivijayan port.',
     datingMethod: 'Stylistic comparisons with Sumatran inscriptions.',
@@ -1163,7 +1163,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Government Museum, Chennai',
     currentLocation: 'Chennai, India',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1566121318599-23214c77c617?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_chola_nataraja.jpg',
     historicalContext: 'A lost-wax bronze sculpture of the god Shiva dancing in a cosmic ring of fire, demonstrating exceptional dynamic balance and structural symmetry.',
     discoveryNotes: 'Recovered from temple vaults in Tamil Nadu.',
     datingMethod: 'Epigraphical links to Rajaraja I era temple dedications.',
@@ -1182,7 +1182,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'National Museum of the Philippines',
     currentLocation: 'Manila, Philippines',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_leyte_seal.jpg',
     historicalContext: 'A small carved ivory seal bearing Kawi script characters, used by maritime merchants to mark trade cargo.',
     discoveryNotes: 'Recovered from archaeological layers in Butuan, Philippines.',
     datingMethod: 'Stratigraphic dating of surrounding trade ceramics.',
@@ -1201,7 +1201,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Amparo Museum (held)',
     currentLocation: 'Puebla, Mexico',
     importanceScore: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1518638150341-f706e86654de?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_african_stone_head.jpg',
     historicalContext: 'A basalt stone sculpture displaying facial features argued by some researchers to represent African biological phenotypes.',
     discoveryNotes: 'Found in central Mexican archaeological contexts.',
     datingMethod: 'Obsidian hydration.',
@@ -1220,7 +1220,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Cairo National Library (referenced)',
     currentLocation: 'Cairo, Egypt',
     importanceScore: 7,
-    imageUrl: 'https://images.unsplash.com/photo-1582298538104-fe2e74c27f59?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/art_abubakr_log.jpg',
     historicalContext: 'A copy of Arabic diplomatic records documenting Mansa Musa\'s testimony in Cairo regarding his predecessor\'s Atlantic expeditions.',
     discoveryNotes: 'Transcribed from Al-Umari\'s Masalik al-Absar manuscripts.',
     datingMethod: 'Textual analysis of 14th-century Egyptian state logs.',
@@ -1239,7 +1239,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationName: 'Mali Empire',
     period: '1312 CE - 1337 CE',
     startYear: 1312,
-    imageUrl: 'https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/figures/Mansa_Musa.jpg',
     biography: 'Musa Keita I took power in 1312. Under his reign, Mali expanded its borders to cover a massive portion of West Africa. He is widely considered the wealthiest individual in human history, famous for his historic pilgrimage to Mecca in 1324.',
     achievements: [
       "Expanded Mali's empire to include Gao and Timbuktu.",
@@ -1256,7 +1256,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationName: 'Kingdom of Kush',
     period: 'c. 40 BCE - 10 BCE',
     startYear: -40,
-    imageUrl: 'https://images.unsplash.com/photo-1600577916048-804c9191e36c?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/figures/Amanirenas.jpg',
     biography: 'One of the most famous Kandakes of Kush, Amanirenas led Kushite armies in military campaigns against the Roman Empire, successfully securing a peace treaty that exempted Kush from Roman tributes.',
     achievements: [
       'Captured Roman fortresses in Syene and Philae.',
@@ -1273,7 +1273,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationName: 'Inca Empire',
     period: '1438 CE - 1471 CE',
     startYear: 1438,
-    imageUrl: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/figures/Pachacuti.jpg',
     biography: 'The administrative mastermind who transformed the Kingdom of Cusco into the expansive Inca Empire, organizing the system of Satrapy-style provinces.',
     achievements: [
       'Rebuilt Cusco into a grand administrative capital of mortarless stone.',
@@ -1290,7 +1290,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationName: 'Inca Empire',
     period: '1532 CE - 1533 CE',
     startYear: 1532,
-    imageUrl: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/figures/Atahualpa.jpg',
     biography: 'The last sovereign emperor of the Inca who won the civil war against his brother Huascar, only to be captured by Pizarro in Cajamarca.',
     achievements: [
       'Mobilized large Andean armies to capture Cusco.',
@@ -1305,6 +1305,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'mexica',
     civilizationName: 'Mexica Empire',
     period: '1502 CE - 1520 CE',
+    imageUrl: '/images/figures/Moctezuma_II.jpg',
     startYear: 1502,
     biography: 'The ruler of Tenochtitlan during the initial contact with Spanish forces under Hernán Cortés, navigating complex diplomatic choices.',
     achievements: [
@@ -1320,6 +1321,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'mexica',
     civilizationName: 'Mexica Empire',
     period: '1427 CE - 1440 CE',
+    imageUrl: '/images/figures/Itzcoatl.jpg',
     startYear: 1427,
     biography: 'The fourth king of Tenochtitlan who allied with Texcoco and Tlacopan to overthrow the Tepanecs, founding the Triple Alliance.',
     achievements: [
@@ -1335,6 +1337,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'asante',
     civilizationName: 'Asante Empire',
     period: '1701 CE - 1717 CE',
+    imageUrl: '/images/figures/Osei_Tutu.jpg',
     startYear: 1701,
     biography: 'Co-founded the Asante Empire along with his high priest Okomfo Anokye, unifying the Akan clans under the Golden Stool.',
     achievements: [
@@ -1350,6 +1353,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'asante',
     civilizationName: 'Asante Empire',
     period: '1900 CE - 1901 CE',
+    imageUrl: '/images/figures/Yaa_Asantewaa.jpg',
     startYear: 1900,
     biography: 'The warrior Queen Mother who led the Asante rebellion against British colonial forces in the War of the Golden Stool.',
     achievements: [
@@ -1365,6 +1369,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'oyo',
     civilizationName: 'Oyo Empire',
     period: 'c. 1554 CE - 1580 CE',
+    imageUrl: '/images/figures/Orompoto.jpg',
     startYear: 1554,
     biography: 'A female ruler of Oyo who dressed as a male to secure the throne and mobilized a highly trained cavalry unit to defend Oyo from Nupe expansion.',
     achievements: [
@@ -1380,6 +1385,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'oyo',
     civilizationName: 'Oyo Empire',
     period: '1774 CE - 1789 CE',
+    imageUrl: '/images/figures/Abiodun.jpg',
     startYear: 1774,
     biography: 'A ruler of Oyo who focused on expanding trade networks and consolidated peace after years of civil unrest.',
     achievements: [
@@ -1395,6 +1401,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'jolof',
     civilizationName: 'Jolof Empire',
     period: '1350 CE - 1390 CE',
+    imageUrl: '/images/figures/Ndiadiane.jpg',
     startYear: 1350,
     biography: 'The legendary founder of the Jolof Empire, chosen to rule by Senegambian clans due to his wisdom in arbitrating water disputes.',
     achievements: [
@@ -1410,6 +1417,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'hausa',
     civilizationName: 'Hausa States',
     period: '1576 CE - 1610 CE',
+    imageUrl: '/images/figures/Amina.jpg',
     startYear: 1576,
     biography: 'The elder daughter of Queen Bakwa Turunku, Amina led cavalry campaigns that forced Hausaland city-states to pay tribute to Zaria.',
     achievements: [
@@ -1425,6 +1433,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'achaemenid',
     civilizationName: 'Achaemenid Empire',
     period: '559 BCE - 530 BCE',
+    imageUrl: '/images/figures/Cyrus.jpg',
     startYear: -559,
     biography: 'The founder of the Achaemenid Empire who conquered Media, Lydia, and Babylonia, noted for his humanitarian governance.',
     achievements: [
@@ -1440,6 +1449,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'achaemenid',
     civilizationName: 'Achaemenid Empire',
     period: '522 BCE - 486 BCE',
+    imageUrl: '/images/figures/Darius.jpg',
     startYear: -522,
     biography: 'Consolidated the Persian Empire by implementing standardized Satrapy tax units and constructing Persepolis.',
     achievements: [
@@ -1455,6 +1465,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'chola',
     civilizationName: 'Chola Dynasty',
     period: '985 CE - 1014 CE',
+    imageUrl: '/images/figures/Rajaraja_I.jpg',
     startYear: 985,
     biography: 'Consolidated the Chola power in South India, reorganizing the state administrative machinery and building the Brihadisvara Temple.',
     achievements: [
@@ -1470,6 +1481,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'chola',
     civilizationName: 'Chola Dynasty',
     period: '1014 CE - 1044 CE',
+    imageUrl: '/images/figures/Rajendra_I.jpg',
     startYear: 1014,
     biography: 'Launched naval campaigns across the Bay of Bengal to conquer Srivijayan ports, securing maritime trade paths to China.',
     achievements: [
@@ -1485,6 +1497,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'srivijaya',
     civilizationName: 'Srivijaya Empire',
     period: 'c. 671 CE - 702 CE',
+    imageUrl: '/images/figures/Sri_Jayanasa.jpg',
     startYear: 671,
     biography: 'The founder of the Srivijayan maritime empire, documented in early stone inscriptions as leading sacred expansionist campaigns.',
     achievements: [
@@ -1500,6 +1513,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'srivijaya',
     civilizationName: 'Srivijaya Empire',
     period: '674 CE - 695 CE',
+    imageUrl: '/images/figures/Shima.jpg',
     startYear: 674,
     biography: 'A legendary Javanese queen known for her absolute, unbending justice and enforcement of anti-theft laws.',
     achievements: [
@@ -1515,6 +1529,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'inca',
     civilizationName: 'Inca Empire',
     period: 'c. 1200 CE',
+    imageUrl: '/images/figures/Manco_Capac.jpg',
     startYear: 1200,
     biography: 'The legendary founder of the Inca dynasty, believed to have traveled from Lake Titicaca to settle the Cusco valley.',
     achievements: [
@@ -1530,6 +1545,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'mexica',
     civilizationName: 'Mexica Empire',
     period: '1486 CE - 1502 CE',
+    imageUrl: '/images/figures/Ahuitzotl.jpg',
     startYear: 1486,
     biography: 'One of the most aggressive military commanders of the Mexica, expanding Aztec hegemony to the borders of Guatemala.',
     achievements: [
@@ -1545,6 +1561,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'hausa',
     civilizationName: 'Hausa States',
     period: '1515 CE - 1554 CE',
+    imageUrl: '/images/figures/Kanta.jpg',
     startYear: 1515,
     biography: 'The founder of the Kebbi Kingdom who led a successful revolt against the Songhai Empire to secure independence for Kebbi.',
     achievements: [
@@ -1560,6 +1577,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'sao',
     civilizationName: 'Sao Civilization',
     period: '1564 CE - 1596 CE',
+    imageUrl: '/images/figures/Alooma.jpg',
     startYear: 1564,
     biography: 'A military innovator who imported firearms from the Ottoman Empire and employed Turkish mercenaries to consolidate Kanem-Bornu.',
     achievements: [
@@ -1575,6 +1593,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'kongo',
     civilizationName: 'Kingdom of Kongo',
     period: '1624 CE - 1663 CE',
+    imageUrl: '/images/figures/Queen_Nzinga.jpg',
     startYear: 1624,
     biography: 'A brilliant diplomat and military strategist who fought Portuguese colonial expansion in Central Africa for four decades.',
     achievements: [
@@ -1591,6 +1610,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'taino',
     civilizationName: 'Taíno People',
     period: 'c. 1493 CE - 1510 CE',
+    imageUrl: '/images/figures/Agueybana.jpg',
     startYear: 1493,
     biography: 'The supreme chief of the Taíno in Puerto Rico who initially welcomed Spanish contacts but attempted to preserve sovereignty.',
     achievements: [
@@ -1606,6 +1626,7 @@ export const FIGURES: HistoricalFigure[] = [
     civilizationId: 'chola',
     civilizationName: 'Chola Dynasty',
     period: '1077 CE',
+    imageUrl: '/images/figures/Saman_Chola.jpg',
     startYear: 1077,
     biography: 'A Chola merchant-diplomat who led a large trade mission to the Song Dynasty court in China to negotiate tariff reductions.',
     achievements: [

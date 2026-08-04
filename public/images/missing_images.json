@@ -1,0 +1,42 @@
+[
+  {
+    "type": "civilization",
+    "id": "sao",
+    "query": "Sao terracotta Chad"
+  },
+  {
+    "type": "figure",
+    "id": "Sundiata_Keita",
+    "query": "Sundiata Keita statue"
+  },
+  {
+    "type": "figure",
+    "id": "Esigie",
+    "query": "Oba Esigie bronze plaque"
+  },
+  {
+    "type": "figure",
+    "id": "Ndiadiane",
+    "query": "Jolof confederacy"
+  },
+  {
+    "type": "figure",
+    "id": "Rajaraja_I",
+    "query": "Rajaraja Chola fresco"
+  },
+  {
+    "type": "figure",
+    "id": "Shima",
+    "query": "Queen Shima Kalingga"
+  },
+  {
+    "type": "artifact",
+    "id": "art_caral_khipu",
+    "query": "Caral khipu"
+  },
+  {
+    "type": "artifact",
+    "id": "art_sao_urn",
+    "query": "Sao terracotta urn"
+  }
+]
