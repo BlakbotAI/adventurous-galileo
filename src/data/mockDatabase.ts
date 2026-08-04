@@ -80,6 +80,22 @@ export const SOURCES: Record<string, Source> = {
     year: 1991,
     citationType: 'Secondary Scholarly',
     evidenceTier: 'Established'
+  },
+  src_nok_smelting: {
+    id: 'src_nok_smelting',
+    title: 'The Nok Culture: Art, Metallurgy and Prehistory',
+    author: 'Fagg, B.',
+    year: 1990,
+    citationType: 'Archaeological',
+    evidenceTier: 'Established'
+  },
+  src_caral_pyramids: {
+    id: 'src_caral_pyramids',
+    title: 'Caral: The Oldest Civilization in the Americas',
+    author: 'Shady Solís, R.',
+    year: 2006,
+    citationType: 'Archaeological',
+    evidenceTier: 'Scholarly Consensus'
   }
 };
 
@@ -323,7 +339,7 @@ export const CIVILIZATIONS: Civilization[] = [
     economy: 'Shell currency (nzimbu), copper mining, raffia textile manufacturing',
     trade: 'Ivory, copper, textiles, and shells traded regionally and internationally',
     technology: 'High-quality weaving of raffia fibers comparable to silk, copper metallurgy',
-    majorCities: ['M\'banza-Kongo'],
+    majorCities: ["M'banza-Kongo"],
     leaders: ['Nzinga_Mvemba', 'Garcia II'],
     artifacts: ['art_kongo_crucifix'],
     influence: 'First major sub-Saharan state to adopt Christianity and engage in equal diplomatic relations with Europe (Vatican, Lisbon).',
@@ -333,6 +349,56 @@ export const CIVILIZATIONS: Civilization[] = [
     africaCentered: true,
     imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
     wikipediaUrl: 'https://en.wikipedia.org/wiki/Kingdom_of_Kongo'
+  },
+  {
+    id: 'nok',
+    name: 'Nok Culture',
+    region: 'West Africa (Nigeria)',
+    period: '1500 BCE - 200 CE',
+    startYear: -1500,
+    endYear: 200,
+    populationEstimate: 'Unknown',
+    government: 'Proto-state/Chiefdoms',
+    religion: 'Ancestral veneration, animism',
+    languages: ['Proto-Benue-Congo languages'],
+    economy: 'Iron manufacturing, agriculture, stone carving',
+    trade: 'Iron tools, terracottas, agricultural surplus in West Africa',
+    technology: 'Early blast-furnace iron metallurgy, high-relief clay terracotta sculpting',
+    majorCities: ['Taruga', 'Samun Dukiya'],
+    leaders: ['Nok_Council'],
+    artifacts: ['art_nok_terracotta'],
+    influence: 'Earliest known iron producers in sub-Saharan Africa. Laid artistic foundations for Benin and Yoruba bronzes.',
+    receivedNarrative: 'Sub-Saharan metallurgy was imported from Phoenician Carthage or Egypt, as African societies could not invent iron smelting independently.',
+    evidenceNote: 'Direct radiocarbon dates of iron slag in Taruga furnace tuyeres prove independent iron smelting in Nok since 1000 BCE, pre-dating Carthage contacts.',
+    evidenceTier: 'Established',
+    africaCentered: true,
+    imageUrl: 'https://images.unsplash.com/photo-1599733589046-9b8308b5b50d?w=600&auto=format&fit=crop&q=80',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Nok_culture'
+  },
+  {
+    id: 'caral',
+    name: 'Caral-Supe Civilization',
+    region: 'South America (Andean Coast)',
+    period: '3000 BCE - 1800 BCE',
+    startYear: -3000,
+    endYear: -1800,
+    populationEstimate: '20,000',
+    government: 'Theocracy / Centralized Administration',
+    religion: 'Andean animist worship, Sun and water ritual complexes',
+    languages: ['Pre-Quechuan languages'],
+    economy: 'Marine resource extraction, cotton farming, irrigation agriculture',
+    trade: 'Anchovies, cotton nets, obsidian, shells connecting coast and highland forests',
+    technology: 'Monumental stone pyramid platforms, earthquake-resistant shicra bag walls, Khipu string accounting',
+    majorCities: ['Caral', 'Aspero'],
+    leaders: ['Sovereign_Priests'],
+    artifacts: ['art_caral_khipu'],
+    influence: 'Oldest known civilization in the Americas. Pioneered the khipu accounting system used later by the Wari and Inca.',
+    receivedNarrative: 'Civilization in the Americas began much later than the Old World, and could not develop urbanism without grain agriculture.',
+    evidenceNote: 'Caral shows massive stone pyramid mounds dating to 3000 BCE, contemporary with Egypt\'s Old Kingdom. It thrived on a diet of marine anchovies and squash, proving civilization did not require grain crop surplus.',
+    evidenceTier: 'Established',
+    africaCentered: false,
+    imageUrl: 'https://images.unsplash.com/photo-1569173112611-52a7cd38bea9?w=600&auto=format&fit=crop&q=80',
+    wikipediaUrl: 'https://en.wikipedia.org/wiki/Caral'
   }
 ];
 
@@ -369,7 +435,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Royal Belgian Institute of Natural Sciences',
     currentLocation: 'Brussels, Belgium',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1447069387593-a5de0862481e?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/ishango_bone.jpg',
     historicalContext: 'A dark brown bone with a quartz crystal fixed to one end, carved with three columns of notches that show mathematical groupings (prime numbers, doubling, addition rules).',
     discoveryNotes: 'Discovered in 1950 by Belgian geologist Jean de Heinzelin de Braucourt near the Semliki River in the Democratic Republic of the Congo.',
     datingMethod: 'Radiocarbon dating and geological layering analysis.',
@@ -390,7 +456,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Oriental Institute of the University of Chicago',
     currentLocation: 'Chicago, USA',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1569173112611-52a7cd38bea9?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/qustul_burner.jpg',
     historicalContext: 'A carved stone incense burner depicting a royal procession, featuring a seated king wearing the White Crown of Upper Egypt, alongside royal emblems.',
     discoveryNotes: 'Excavated from a royal tomb in Qustul (Nubia) by Keith C. Seele between 1962 and 1964.',
     datingMethod: 'Typological analysis and stratigraphic dating of the tomb.',
@@ -411,7 +477,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'Mapungubwe Museum, University of Pretoria',
     currentLocation: 'Pretoria, South Africa',
     importanceScore: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/golden_rhino.jpg',
     historicalContext: 'A small wooden carving covered in hammered sheets of pure gold foil, representing a rhinoceros. Discovered in a royal grave.',
     discoveryNotes: 'Found in 1932 on Mapungubwe Hill, Limpopo Valley, South Africa, by a local treasure hunter who reported it to the University of Pretoria.',
     datingMethod: 'Radiocarbon dating of surrounding carbonized wood and pottery styles.',
@@ -432,7 +498,7 @@ export const ARTIFACTS: Artifact[] = [
     museum: 'British Museum (held)',
     currentLocation: 'London, United Kingdom (subject to repatriation claims)',
     importanceScore: 9,
-    imageUrl: 'https://images.unsplash.com/photo-1590189182193-1fd44f2b4048?w=600&auto=format&fit=crop&q=80',
+    imageUrl: '/images/artifacts/benin_bronze.jpg',
     historicalContext: 'One of hundreds of cast brass plates that decorated the pillars of the Oba\'s royal palace, depicting historical battles and palace protocols.',
     discoveryNotes: 'Looted by British forces during the punitive expedition of Benin City in 1897.',
     datingMethod: 'Metallurgical analysis and style classification.',
@@ -440,6 +506,48 @@ export const ARTIFACTS: Artifact[] = [
     evidenceTier: 'Established',
     sources: [
       { sourceId: 'src_benin', pageOrDetail: 'p. 80-95' }
+    ]
+  },
+  {
+    id: 'art_nok_terracotta',
+    name: 'Nok Terracotta Head',
+    civilizationId: 'nok',
+    civilizationName: 'Nok Culture',
+    date: '500 BCE',
+    startYear: -500,
+    material: ['Terracotta clay'],
+    museum: 'National Museum of Nigeria',
+    currentLocation: 'Jos, Nigeria',
+    importanceScore: 9,
+    imageUrl: 'https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3?w=600&auto=format&fit=crop&q=80',
+    historicalContext: 'A hollow-cast terracotta head depicting a figure with large triangular eyes, perforated pupils, and elaborate hair folds.',
+    discoveryNotes: 'Dug up during tin mining in Nok village, Kaduna State, Nigeria.',
+    datingMethod: 'Thermoluminescence (TL) and stratigraphic carbon dating of clay grains.',
+    scholarlyDebates: 'Debated whether they represented specific deceased ancestors, kings, or ritual icons.',
+    evidenceTier: 'Established',
+    sources: [
+      { sourceId: 'src_nok_smelting', pageOrDetail: 'p. 45' }
+    ]
+  },
+  {
+    id: 'art_caral_khipu',
+    name: 'Caral Khipu Accounting System',
+    civilizationId: 'caral',
+    civilizationName: 'Caral-Supe Civilization',
+    date: '3000 BCE',
+    startYear: -3000,
+    material: ['Cotton strings', 'Wood fibers'],
+    museum: 'Museo de Arqueología de Caral',
+    currentLocation: 'Lima, Peru',
+    importanceScore: 10,
+    imageUrl: 'https://images.unsplash.com/photo-1627856013091-fed6e4e30025?w=600&auto=format&fit=crop&q=80',
+    historicalContext: 'A collection of knotted cords of varying lengths and colors, used to record numerical inventories or calendar dates.',
+    discoveryNotes: 'Uncovered in a ceremonial gallery at Caral by Ruth Shady Solís.',
+    datingMethod: 'Radiocarbon dating of organic cotton fibers.',
+    scholarlyDebates: 'Confirms that administrative accounting systems in the Americas pre-date the invention of writing.',
+    evidenceTier: 'Scholarly Consensus',
+    sources: [
+      { sourceId: 'src_caral_pyramids', pageOrDetail: 'p. 110' }
     ]
   }
 ];
@@ -575,6 +683,30 @@ export const TIMELINE_EVENTS: TimelineEvent[] = [
     africaCentered: true,
     evidenceTier: 'Speculative',
     sources: [{ sourceId: 'src_abubakr' }]
+  },
+  {
+    id: 'time_caral_pyramids',
+    title: 'Monumental Pyramids at Caral',
+    year: -3000,
+    displayYear: '3000 BCE',
+    description: 'Indigenous Andean communities construct massive stone pyramid platforms and public plazas in Caral, creating the oldest known urban complex in the Americas.',
+    region: 'South America',
+    theme: 'Science',
+    africaCentered: false,
+    evidenceTier: 'Scholarly Consensus',
+    sources: [{ sourceId: 'src_caral_pyramids' }]
+  },
+  {
+    id: 'time_nok_smelting',
+    title: 'Nok Blast Furnace Iron Smelting',
+    year: -1000,
+    displayYear: '1000 BCE',
+    description: 'Scholars in Nok construct refractory clay blast furnaces at Taruga, producing refined iron implements independently.',
+    region: 'West Africa',
+    theme: 'Science',
+    africaCentered: true,
+    evidenceTier: 'Established',
+    sources: [{ sourceId: 'src_nok_smelting' }]
   }
 ];
 
