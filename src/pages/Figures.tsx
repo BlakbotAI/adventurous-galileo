@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Crown, ArrowLeft, Sparkles, MessageSquare, BookOpen, GitCommit } from 'lucide-react';
 import { db } from '../services/db';
 import type { HistoricalFigure } from '../types/database';
+import { MuseumSyncRegistry } from '../components/MuseumSyncRegistry';
 
 interface FiguresProps {
   onNavigateToTab: (tab: string) => void;
@@ -195,6 +196,8 @@ export const Figures: React.FC<FiguresProps> = ({ onNavigateToTab, userRole }) =
                 )}
               </div>
             </div>
+
+            <MuseumSyncRegistry query={selectedFig.name} type="figure" />
           </div>
         </div>
       )}

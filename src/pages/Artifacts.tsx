@@ -3,6 +3,7 @@ import { Scroll, X, ShieldAlert, Award, RefreshCw, MessageSquare, BookOpen } fro
 import { db } from '../services/db';
 import type { Artifact } from '../types/database';
 import { ArtifactViewer3D } from '../components/ArtifactViewer3D';
+import { MuseumSyncRegistry } from '../components/MuseumSyncRegistry';
 
 interface ArtifactsProps {
   onNavigateToTab: (tab: string) => void;
@@ -233,6 +234,7 @@ export const Artifacts: React.FC<ArtifactsProps> = ({ onNavigateToTab, userRole 
 
               </div>
 
+              <MuseumSyncRegistry query={selectedArt.name} type="artifact" />
             </div>
           </div>
         </div>

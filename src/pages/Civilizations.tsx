@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Landmark, ArrowLeft, Globe, Shield, MessageSquare, ExternalLink, AlertTriangle } from 'lucide-react';
 import { db } from '../services/db';
 import type { Civilization } from '../types/database';
+import { MuseumSyncRegistry } from '../components/MuseumSyncRegistry';
 
 interface CivilizationsProps {
   onNavigateToTab: (tab: string) => void;
@@ -314,6 +315,8 @@ export const Civilizations: React.FC<CivilizationsProps> = ({ onNavigateToTab, u
               )}
             </div>
           </div>
+
+          <MuseumSyncRegistry query={selectedCiv.name} type="civilization" />
         </div>
       )}
     </div>
