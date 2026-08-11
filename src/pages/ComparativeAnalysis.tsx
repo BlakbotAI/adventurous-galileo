@@ -96,8 +96,30 @@ Your response should:
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No report generated.';
       setComparisonReport(text);
     } catch (err: any) {
-      console.error(err);
-      setComparisonReport(`**Error**: Failed to connect to Gemini API. ${err?.message || ''}`);
+      console.warn('Direct Gemini API call failed or blocked by CORS. Retrying via CORS Proxy...', err);
+      try {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`)}`;
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: systemPrompt }]
+              }
+            ]
+          })
+        });
+
+        if (!response.ok) throw new Error(`Proxy retry failed: ${response.statusText}`);
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No report generated.';
+        setComparisonReport(text);
+      } catch (proxyErr: any) {
+        console.error('CORS Proxy fallback failed for ComparativeAnalysis:', proxyErr);
+        setComparisonReport(`**Error**: Failed to connect to Gemini API. ${proxyErr?.message || ''}`);
+      }
     } finally {
       setIsLoading(false);
     }

@@ -620,14 +620,44 @@ Instructions:
         citations: databaseCitations.length > 0 ? databaseCitations : undefined
       }]);
     } catch (err: any) {
-      console.error(err);
-      setMessages(prev => [...prev, {
-        sender: 'ai',
-        text: `**Connection Error**: Failed to fetch live response from Gemini API. ${err?.message || ''}. Falling back to local offline search...`,
-        persona
-      }]);
-      // Fallback
-      simulateResponse(query);
+      console.warn('Direct Gemini API call failed or blocked by CORS. Retrying via CORS Proxy...', err);
+      try {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`)}`;
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: 'user',
+                parts: [{ text: `${systemPrompt}\n\nUser Question: ${query}` }]
+              }
+            ]
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Proxy retry failed: ${response.statusText}`);
+        }
+
+        const resJson = await response.json();
+        const answer = resJson.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated from Gemini API.';
+
+        setMessages(prev => [...prev, {
+          sender: 'ai',
+          text: answer,
+          persona,
+          citations: databaseCitations.length > 0 ? databaseCitations : undefined
+        }]);
+      } catch (proxyErr: any) {
+        console.error('CORS Proxy fallback failed:', proxyErr);
+        setMessages(prev => [...prev, {
+          sender: 'ai',
+          text: `**Connection Error**: Failed to fetch live response from Gemini API. ${proxyErr?.message || ''}. Falling back to local offline search...`,
+          persona
+        }]);
+        simulateResponse(query);
+      }
     } finally {
       setIsTyping(false);
     }
@@ -727,13 +757,46 @@ Instructions:
         citations: databaseCitations.length > 0 ? databaseCitations : undefined
       }]);
     } catch (err: any) {
-      console.error(err);
-      setMessages(prev => [...prev, {
-        sender: 'ai',
-        text: `**OpenAI Connection Error**: Failed to fetch live response. ${err?.message || ''}. Falling back to local offline search...`,
-        persona
-      }]);
-      simulateResponse(query);
+      console.warn('Direct OpenAI API call failed or blocked by CORS. Retrying via CORS Proxy...', err);
+      try {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://api.openai.com/v1/chat/completions')}`;
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: query }
+            ]
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Proxy retry failed: ${response.statusText}`);
+        }
+
+        const resJson = await response.json();
+        const answer = resJson.choices?.[0]?.message?.content || 'No response generated from OpenAI API.';
+
+        setMessages(prev => [...prev, {
+          sender: 'ai',
+          text: answer,
+          persona,
+          citations: databaseCitations.length > 0 ? databaseCitations : undefined
+        }]);
+      } catch (proxyErr: any) {
+        console.error('CORS Proxy fallback failed for OpenAI:', proxyErr);
+        setMessages(prev => [...prev, {
+          sender: 'ai',
+          text: `**OpenAI Connection Error**: Failed to fetch live response. ${proxyErr?.message || ''}. Falling back to local offline search...`,
+          persona
+        }]);
+        simulateResponse(query);
+      }
     } finally {
       setIsTyping(false);
     }
