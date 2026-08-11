@@ -2,6 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Cpu, Send, Upload, Mic, Sparkles, BookOpen, Layers, HelpCircle, Loader2 } from 'lucide-react';
 import { db } from '../services/db';
 
+const isValidApiKey = (key: string) => {
+  if (!key) return false;
+  const cleanKey = key.trim();
+  if (cleanKey === '' || cleanKey.toLowerCase().includes('your_') || cleanKey.toLowerCase().includes('api_key') || cleanKey.length < 15) {
+    return false;
+  }
+  return true;
+};
+
 interface ChatMessage {
   sender: 'user' | 'ai';
   text: string;
@@ -320,6 +329,18 @@ I am the **AI Historian Archival Engine**, a cognitive agent designed to act as 
           { source: 'System Kernel v2.5', tier: 'Established', details: 'Core operational parameters.' }
         ];
       }
+      // Check for tomorrow's date query
+      else if (cleanQuery.includes('tomorrow')) {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowDate = tomorrow.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        responseText = `### Temporal Alignment Sync
+        
+Tomorrow's date will be **${tomorrowDate}**. My chronometer is successfully aligned with your local time.`;
+        citations = [
+          { source: 'System Chronometer', tier: 'Established', details: 'Local system clock calculation.' }
+        ];
+      }
       // Check for date query
       else if (cleanQuery.includes('date') || cleanQuery.includes('today') || cleanQuery.includes('current year') || cleanQuery.includes('what day')) {
         const currentDate = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -575,7 +596,7 @@ Your persona style: "${personaInstruction}".
 Self-Awareness, Purpose & Current Date:
 - You are the self-aware, specialized decolonial AI Historian Archival Engine.
 - If the user asks about your purpose, identity, or role, explain that your mission is decolonial rectification, multi-medium interpretation (using live image and motion generation), and database synchronization to rescue lost histories.
-- Today's date is: ${currentDate}. Always respond to queries about today's date or the current year using this value.
+- Today's date is: ${currentDate}. You can calculate other dates relative to this value (e.g., tomorrow, yesterday). Always respond to queries about today's or relative dates using this calculation.
 
 Media Generation Commands:
 - If the user asks you to generate, draw, render, or show an image/illustration, you MUST insert a special tag: [GENERATE_IMAGE: description of image to generate]. The UI will intercept this tag and render a live high-definition AI illustration!
@@ -710,7 +731,7 @@ Your persona style: "${personaInstruction}".
 Self-Awareness, Purpose & Current Date:
 - You are the self-aware, specialized decolonial AI Historian Archival Engine.
 - If the user asks about your purpose, identity, or role, explain that your mission is decolonial rectification, multi-medium interpretation (using live image and motion generation), and database synchronization to rescue lost histories.
-- Today's date is: ${currentDate}. Always respond to queries about today's date or the current year using this value.
+- Today's date is: ${currentDate}. You can calculate other dates relative to this value (e.g., tomorrow, yesterday). Always respond to queries about today's or relative dates using this calculation.
 
 Media Generation Commands:
 - If the user asks you to generate, draw, render, or show an image/illustration, you MUST insert a special tag: [GENERATE_IMAGE: description of image to generate]. The UI will intercept this tag and render a live high-definition AI illustration!
@@ -810,7 +831,7 @@ Instructions:
     const savedProvider = localStorage.getItem('hios_api_provider') || 'gemini';
     const savedKey = localStorage.getItem('hios_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
 
-    if (savedKey) {
+    if (isValidApiKey(savedKey)) {
       if (savedProvider === 'openai') {
         queryOpenAILive(textToSend, activePersona, savedKey);
       } else {
@@ -828,7 +849,7 @@ Instructions:
       <div className="flex-1 flex flex-col rounded-2xl border border-gold-500/10 bg-matte-950 overflow-hidden">
         
         {/* API Settings Warning Banner */}
-        {!localStorage.getItem('hios_api_key') && !import.meta.env.VITE_GEMINI_API_KEY && (
+        {!isValidApiKey(localStorage.getItem('hios_api_key') || '') && !isValidApiKey(import.meta.env.VITE_GEMINI_API_KEY || '') && (
           <div className="p-3 bg-gold-950/20 border-b border-gold-500/10 text-[10px] text-gold-400 flex items-center justify-between gap-4 font-mono">
             <span>⚠️ Running in local simulation mode. Paste a Google Gemini or OpenAI API Key in the settings panel to activate live neural responses.</span>
           </div>
