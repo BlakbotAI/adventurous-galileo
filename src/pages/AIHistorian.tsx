@@ -948,12 +948,40 @@ Instructions:
         citations: databaseCitations.length > 0 ? databaseCitations : undefined
       }]);
     } catch (err: any) {
-      console.error('Pollinations fetch failed:', err);
-      setMessages(prev => [...prev, {
-        sender: 'ai',
-        text: `❌ **Connection Error**: Failed to fetch live response from Free AI Engine. ${err?.message || ''}.`,
-        persona
-      }]);
+      console.warn('Direct Pollinations call failed or blocked by CORS. Retrying via CORS Proxy...', err);
+      try {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://text.pollinations.ai/')}`;
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: query }
+            ]
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Proxy retry failed: ${response.statusText}`);
+        }
+
+        const answer = await response.text();
+
+        setMessages(prev => [...prev, {
+          sender: 'ai',
+          text: answer,
+          persona,
+          citations: databaseCitations.length > 0 ? databaseCitations : undefined
+        }]);
+      } catch (proxyErr: any) {
+        console.error('All Pollinations AI attempts failed:', proxyErr);
+        setMessages(prev => [...prev, {
+          sender: 'ai',
+          text: `❌ **Connection Error**: Failed to fetch live response from Free AI Engine. ${proxyErr?.message || ''}.`,
+          persona
+        }]);
+      }
     } finally {
       setIsTyping(false);
     }

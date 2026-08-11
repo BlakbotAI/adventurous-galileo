@@ -66,8 +66,27 @@ Your response should:
         const text = await response.text();
         setComparisonReport(text);
       } catch (pollinationsErr: any) {
-        console.error('Comparative analysis generation failed:', pollinationsErr);
-        setComparisonReport(`**Error**: Failed to generate comparative report live. ${pollinationsErr?.message || ''}`);
+        console.warn('Direct Pollinations report call failed or blocked by CORS. Retrying via CORS Proxy...', pollinationsErr);
+        try {
+          const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://text.pollinations.ai/')}`;
+          const response = await fetch(proxyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              messages: [
+                { role: 'system', content: 'You are a professional decolonial AI Historian.' },
+                { role: 'user', content: systemPrompt }
+              ]
+            })
+          });
+
+          if (!response.ok) throw new Error(`Proxy retry failed: ${response.statusText}`);
+          const text = await response.text();
+          setComparisonReport(text);
+        } catch (proxyErr: any) {
+          console.error('All Pollinations AI attempts failed for ComparativeAnalysis:', proxyErr);
+          setComparisonReport(`**Error**: Failed to generate comparative report live. ${proxyErr?.message || ''}`);
+        }
       } finally {
         setIsLoading(false);
       }
