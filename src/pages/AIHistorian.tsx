@@ -2,11 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Cpu, Send, Upload, Mic, Sparkles, BookOpen, Layers, HelpCircle, Loader2 } from 'lucide-react';
 import { db } from '../services/db';
 
-const isValidApiKey = (key: string) => {
+const isValidApiKey = (key: string, provider: 'gemini' | 'openai') => {
   if (!key) return false;
   const cleanKey = key.trim();
   if (cleanKey === '' || cleanKey.toLowerCase().includes('your_') || cleanKey.toLowerCase().includes('api_key') || cleanKey.length < 15) {
     return false;
+  }
+  if (provider === 'gemini') {
+    return cleanKey.startsWith('AIzaSy');
+  } else if (provider === 'openai') {
+    return cleanKey.startsWith('sk-');
   }
   return true;
 };
@@ -623,7 +628,8 @@ Instructions:
               role: 'user',
               parts: [{ text: `${systemPrompt}\n\nUser Question: ${query}` }]
             }
-          ]
+          ],
+          tools: [{ google_search: {} }]
         })
       });
 
@@ -653,7 +659,8 @@ Instructions:
                 role: 'user',
                 parts: [{ text: `${systemPrompt}\n\nUser Question: ${query}` }]
               }
-            ]
+            ],
+            tools: [{ google_search: {} }]
           })
         });
 
@@ -829,7 +836,7 @@ Instructions:
     const savedProvider = localStorage.getItem('hios_api_provider') || 'gemini';
     const savedKey = localStorage.getItem('hios_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
 
-    if (isValidApiKey(savedKey)) {
+    if (isValidApiKey(savedKey, savedProvider as any)) {
       if (savedProvider === 'openai') {
         queryOpenAILive(textToSend, activePersona, savedKey);
       } else {
@@ -855,7 +862,7 @@ Instructions:
       <div className="flex-1 flex flex-col rounded-2xl border border-gold-500/10 bg-matte-950 overflow-hidden">
         
         {/* API Settings Warning Banner */}
-        {!isValidApiKey(localStorage.getItem('hios_api_key') || '') && !isValidApiKey(import.meta.env.VITE_GEMINI_API_KEY || '') && (
+        {!isValidApiKey(localStorage.getItem('hios_api_key') || '', apiProvider) && !isValidApiKey(import.meta.env.VITE_GEMINI_API_KEY || '', 'gemini') && (
           <div className="p-3 bg-gold-950/20 border-b border-gold-500/10 text-[10px] text-gold-400 flex items-center justify-between gap-4 font-mono">
             <span>⚠️ Running in local simulation mode. Paste a Google Gemini or OpenAI API Key in the settings panel to activate live neural responses.</span>
           </div>

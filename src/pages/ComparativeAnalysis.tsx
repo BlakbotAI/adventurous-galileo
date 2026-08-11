@@ -67,7 +67,8 @@ Your response should:
               role: 'user',
               parts: [{ text: systemPrompt }]
             }
-          ]
+          ],
+          tools: [{ google_search: {} }]
         })
       });
 
@@ -88,7 +89,8 @@ Your response should:
                 role: 'user',
                 parts: [{ text: systemPrompt }]
               }
-            ]
+            ],
+            tools: [{ google_search: {} }]
           })
         });
 
