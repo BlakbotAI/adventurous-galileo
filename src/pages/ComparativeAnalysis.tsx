@@ -99,8 +99,30 @@ Your response should:
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No report generated.';
         setComparisonReport(text);
       } catch (proxyErr: any) {
-        console.error('CORS Proxy fallback failed for ComparativeAnalysis:', proxyErr);
-        setComparisonReport(`**Error**: Failed to connect to Gemini API. ${proxyErr?.message || ''}`);
+        console.warn('CORS Proxy fallback failed or search tool restricted. Retrying WITHOUT search tools...', proxyErr);
+        try {
+          const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`)}`;
+          const response = await fetch(proxyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: 'user',
+                  parts: [{ text: systemPrompt }]
+                }
+              ]
+            })
+          });
+
+          if (!response.ok) throw new Error(`Fallback retry failed: ${response.statusText}`);
+          const data = await response.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No report generated.';
+          setComparisonReport(text);
+        } catch (fallbackErr: any) {
+          console.error('All Gemini API attempts failed for ComparativeAnalysis:', fallbackErr);
+          setComparisonReport(`**Error**: Failed to connect to Gemini API. ${fallbackErr?.message || ''}`);
+        }
       }
     } finally {
       setIsLoading(false);

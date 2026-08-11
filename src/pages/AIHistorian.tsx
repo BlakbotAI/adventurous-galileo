@@ -678,12 +678,43 @@ Instructions:
           citations: databaseCitations.length > 0 ? databaseCitations : undefined
         }]);
       } catch (proxyErr: any) {
-        console.error('CORS Proxy fallback failed:', proxyErr);
-        setMessages(prev => [...prev, {
-          sender: 'ai',
-          text: `❌ **Connection Error**: Failed to fetch live response from Gemini API. ${proxyErr?.message || ''}. Please check that your API Key is correct, active, and has access to Gemini.`,
-          persona
-        }]);
+        console.warn('CORS Proxy fallback failed or search tool restricted. Retrying WITHOUT search tools...', proxyErr);
+        try {
+          const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`)}`;
+          const response = await fetch(proxyUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: 'user',
+                  parts: [{ text: `${systemPrompt}\n\nUser Question: ${query}` }]
+                }
+              ]
+            })
+          });
+
+          if (!response.ok) {
+            throw new Error(`Fallback retry failed: ${response.statusText}`);
+          }
+
+          const resJson = await response.json();
+          const answer = resJson.candidates?.[0]?.content?.parts?.[0]?.text || 'No response generated from Gemini API.';
+
+          setMessages(prev => [...prev, {
+            sender: 'ai',
+            text: answer,
+            persona,
+            citations: databaseCitations.length > 0 ? databaseCitations : undefined
+          }]);
+        } catch (fallbackErr: any) {
+          console.error('All Gemini API attempts failed:', fallbackErr);
+          setMessages(prev => [...prev, {
+            sender: 'ai',
+            text: `❌ **Connection Error**: Failed to fetch live response from Gemini API. ${fallbackErr?.message || ''}. Please check that your API Key is correct, active, and has access to Gemini.`,
+            persona
+          }]);
+        }
       }
     } finally {
       setIsTyping(false);
