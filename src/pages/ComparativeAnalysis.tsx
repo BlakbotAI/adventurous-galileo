@@ -51,16 +51,7 @@ Your response should:
     if (!isValidApiKey(apiKey)) {
       // Fallback to Pollinations AI to generate the report live!
       try {
-        const response = await fetch('https://text.pollinations.ai/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [
-              { role: 'system', content: 'You are a professional decolonial AI Historian.' },
-              { role: 'user', content: systemPrompt }
-            ]
-          })
-        });
+        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(systemPrompt)}`);
 
         if (!response.ok) throw new Error(`Pollinations report failed: ${response.statusText}`);
         const text = await response.text();
@@ -68,17 +59,8 @@ Your response should:
       } catch (pollinationsErr: any) {
         console.warn('Direct Pollinations report call failed or blocked by CORS. Retrying via CORS Proxy...', pollinationsErr);
         try {
-          const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://text.pollinations.ai/')}`;
-          const response = await fetch(proxyUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              messages: [
-                { role: 'system', content: 'You are a professional decolonial AI Historian.' },
-                { role: 'user', content: systemPrompt }
-              ]
-            })
-          });
+          const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://text.pollinations.ai/${encodeURIComponent(systemPrompt)}`)}`;
+          const response = await fetch(proxyUrl);
 
           if (!response.ok) throw new Error(`Proxy retry failed: ${response.statusText}`);
           const text = await response.text();

@@ -923,20 +923,13 @@ Instructions:
 - Do NOT make up facts. Focus on the provided database context.
 `;
 
+    const fullPrompt = `${systemPrompt}\n\nUser Question: ${query}`;
+
     try {
-      const response = await fetch('https://text.pollinations.ai/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: query }
-          ]
-        })
-      });
+      const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(fullPrompt)}`);
 
       if (!response.ok) {
-        throw new Error(`Pollinations request failed: ${response.statusText}`);
+        throw new Error(`Pollinations GET request failed: ${response.statusText}`);
       }
 
       const answer = await response.text();
@@ -948,19 +941,10 @@ Instructions:
         citations: databaseCitations.length > 0 ? databaseCitations : undefined
       }]);
     } catch (err: any) {
-      console.warn('Direct Pollinations call failed or blocked by CORS. Retrying via CORS Proxy...', err);
+      console.warn('Direct Pollinations GET call failed or blocked by CORS. Retrying via CORS Proxy...', err);
       try {
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://text.pollinations.ai/')}`;
-        const response = await fetch(proxyUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: query }
-            ]
-          })
-        });
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://text.pollinations.ai/${encodeURIComponent(fullPrompt)}`)}`;
+        const response = await fetch(proxyUrl);
 
         if (!response.ok) {
           throw new Error(`Proxy retry failed: ${response.statusText}`);
