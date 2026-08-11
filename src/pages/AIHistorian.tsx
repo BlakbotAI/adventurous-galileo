@@ -708,12 +708,8 @@ Instructions:
             citations: databaseCitations.length > 0 ? databaseCitations : undefined
           }]);
         } catch (fallbackErr: any) {
-          console.error('All Gemini API attempts failed:', fallbackErr);
-          setMessages(prev => [...prev, {
-            sender: 'ai',
-            text: `❌ **Connection Error**: Failed to fetch live response from Gemini API. ${fallbackErr?.message || ''}. Please check that your API Key is correct, active, and has access to Gemini.`,
-            persona
-          }]);
+          console.warn('All Gemini API attempts failed. Activating local cognitive engine fallback...', fallbackErr);
+          simulateResponse(query);
         }
       }
     } finally {
@@ -847,12 +843,8 @@ Instructions:
           citations: databaseCitations.length > 0 ? databaseCitations : undefined
         }]);
       } catch (proxyErr: any) {
-        console.error('CORS Proxy fallback failed for OpenAI:', proxyErr);
-        setMessages(prev => [...prev, {
-          sender: 'ai',
-          text: `❌ **OpenAI Connection Error**: Failed to fetch live response. ${proxyErr?.message || ''}. Please verify that your OpenAI API Key is correct and active.`,
-          persona
-        }]);
+        console.warn('All OpenAI API attempts failed. Activating local cognitive engine fallback...', proxyErr);
+        simulateResponse(query);
       }
     } finally {
       setIsTyping(false);
@@ -918,18 +910,25 @@ ${contextText}
 ---
 Instructions:
 - Deconstruct colonial/eurocentric biases. Use active voice and write with rich historical authority.
-- Provide a summary, citation nodes, and evidence confirmations.
 - Keep output concise and formatted in clean markdown.
 - Do NOT make up facts. Focus on the provided database context.
 `;
 
-    const fullPrompt = `${systemPrompt}\n\nUser Question: ${query}`;
-
     try {
-      const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(fullPrompt)}`);
+      const response = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: query }
+          ],
+          model: 'openai'
+        })
+      });
 
       if (!response.ok) {
-        throw new Error(`Pollinations GET request failed: ${response.statusText}`);
+        throw new Error(`Pollinations request failed: ${response.statusText}`);
       }
 
       const answer = await response.text();
@@ -941,10 +940,20 @@ Instructions:
         citations: databaseCitations.length > 0 ? databaseCitations : undefined
       }]);
     } catch (err: any) {
-      console.warn('Direct Pollinations GET call failed or blocked by CORS. Retrying via CORS Proxy...', err);
+      console.warn('Direct Pollinations call failed or blocked by CORS. Retrying via CORS Proxy...', err);
       try {
-        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(`https://text.pollinations.ai/${encodeURIComponent(fullPrompt)}`)}`;
-        const response = await fetch(proxyUrl);
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent('https://text.pollinations.ai/')}`;
+        const response = await fetch(proxyUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: query }
+            ],
+            model: 'openai'
+          })
+        });
 
         if (!response.ok) {
           throw new Error(`Proxy retry failed: ${response.statusText}`);
@@ -959,12 +968,8 @@ Instructions:
           citations: databaseCitations.length > 0 ? databaseCitations : undefined
         }]);
       } catch (proxyErr: any) {
-        console.error('All Pollinations AI attempts failed:', proxyErr);
-        setMessages(prev => [...prev, {
-          sender: 'ai',
-          text: `❌ **Connection Error**: Failed to fetch live response from Free AI Engine. ${proxyErr?.message || ''}.`,
-          persona
-        }]);
+        console.warn('All live network endpoints failed. Activating local cognitive engine fallback...', proxyErr);
+        simulateResponse(query);
       }
     } finally {
       setIsTyping(false);
