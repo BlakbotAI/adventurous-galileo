@@ -12,7 +12,6 @@ export const ComparativeAnalysis: React.FC = () => {
 
   const civA = civilizations.find(c => c.id === entityAId) || civilizations[0];
   const civB = civilizations.find(c => c.id === entityBId) || civilizations[1];
-
   const handleGenerateAIReport = async () => {
     setIsLoading(true);
     setComparisonReport('');
@@ -22,16 +21,8 @@ export const ComparativeAnalysis: React.FC = () => {
     const isValidApiKey = (key: string) => {
       if (!key) return false;
       const cleanKey = key.trim();
-      return !(cleanKey === '' || cleanKey.toLowerCase().includes('your_') || cleanKey.toLowerCase().includes('api_key') || cleanKey.length < 15);
+      return cleanKey.startsWith('AIzaSy') || cleanKey.startsWith('sk-');
     };
-
-    if (!isValidApiKey(apiKey)) {
-      setTimeout(() => {
-        setComparisonReport(`⚠️ **API Key Required**: Please configure a valid Google Gemini or OpenAI API Key in the settings panel of the **AI Historian** tab to enable live comparative analysis reports.`);
-        setIsLoading(false);
-      }, 500);
-      return;
-    }
 
     const systemPrompt = `You are a professional decolonial AI Historian.
 Generate a comparative analysis report comparing the following two African civilizations using these verified database records:
@@ -56,6 +47,32 @@ Your response should:
 - Compare their architectural, political, and trade achievements.
 - Deconstruct colonial/eurocentric misconceptions.
 - Write with authority, in clean markdown format, highlighting overlapping chronologies.`;
+
+    if (!isValidApiKey(apiKey)) {
+      // Fallback to Pollinations AI to generate the report live!
+      try {
+        const response = await fetch('https://text.pollinations.ai/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [
+              { role: 'system', content: 'You are a professional decolonial AI Historian.' },
+              { role: 'user', content: systemPrompt }
+            ]
+          })
+        });
+
+        if (!response.ok) throw new Error(`Pollinations report failed: ${response.statusText}`);
+        const text = await response.text();
+        setComparisonReport(text);
+      } catch (pollinationsErr: any) {
+        console.error('Comparative analysis generation failed:', pollinationsErr);
+        setComparisonReport(`**Error**: Failed to generate comparative report live. ${pollinationsErr?.message || ''}`);
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
 
     try {
       const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {

@@ -265,8 +265,8 @@ export const AIHistorian: React.FC<AIHistorianProps> = ({ initialQuery, onClearI
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const [apiProvider, setApiProvider] = useState<'gemini' | 'openai'>(() => {
-    return (localStorage.getItem('hios_api_provider') as any) || 'gemini';
+  const [apiProvider, setApiProvider] = useState<'pollinations' | 'gemini' | 'openai'>(() => {
+    return (localStorage.getItem('hios_api_provider') as any) || 'pollinations';
   });
   const [apiKeyInput, setApiKeyInput] = useState(() => {
     return localStorage.getItem('hios_api_key') || '';
@@ -859,15 +859,117 @@ Instructions:
     }
   };
 
+  const queryPollinationsLive = async (query: string, persona: string) => {
+    setIsTyping(true);
+
+    const civilizations = db.getCivilizations();
+    const artifacts = db.getArtifacts();
+    const figures = db.getFigures();
+
+    const cleanQuery = query.toLowerCase();
+    const matchingCivs = civilizations.filter(c => cleanQuery.includes(c.name.toLowerCase()) || c.name.toLowerCase().includes(cleanQuery));
+    const matchingArts = artifacts.filter(a => cleanQuery.includes(a.name.toLowerCase()) || a.name.toLowerCase().includes(cleanQuery));
+    const matchingFigs = figures.filter(f => cleanQuery.includes(f.name.toLowerCase()) || f.name.toLowerCase().includes(cleanQuery));
+
+    let contextText = '';
+    const databaseCitations: Array<{ source: string; tier: string; details: string }> = [];
+
+    matchingCivs.forEach(c => {
+      contextText += `Civilization Dossier: Name: ${c.name}, Region: ${c.region}, Chronology: ${c.period}. Narrative Correction: ${c.evidenceNote || c.receivedNarrative}. Evidence Status: ${c.evidenceTier}.\n\n`;
+      databaseCitations.push({ source: c.name, tier: c.evidenceTier, details: c.evidenceNote || 'Primary historical ledger.' });
+    });
+
+    matchingArts.forEach(a => {
+      contextText += `Artifact Registry: Name: ${a.name}, Origin: ${a.civilizationName}, Dating Method: ${a.datingMethod}, Chronology: ${a.date}. Museum: ${a.museum}. Description: ${a.historicalContext}. Repatriation Debate: ${a.scholarlyDebates || 'None'}. Evidence Status: ${a.evidenceTier}.\n\n`;
+      databaseCitations.push({ source: a.name, tier: a.evidenceTier, details: `${a.museum} repatriation logs: ${a.scholarlyDebates || 'Legitimate archaeological verification.'}` });
+    });
+
+    matchingFigs.forEach(f => {
+      contextText += `Historical Figure: Name: ${f.name}, Title: ${f.title}, Civilization: ${f.civilizationName}, Chronology: ${f.period}. Bio: ${f.biography}. Achievements: ${f.achievements.join(', ')}.\n\n`;
+      databaseCitations.push({ source: f.name, tier: 'Established', details: f.biography });
+    });
+
+    if (contextText === '') {
+      civilizations.slice(0, 2).forEach(c => {
+        contextText += `Civilization Dossier: Name: ${c.name}, Region: ${c.region}, Chronology: ${c.period}. Correction: ${c.evidenceNote}.\n\n`;
+      });
+      artifacts.slice(0, 2).forEach(a => {
+        contextText += `Artifact: Name: ${a.name}, Origin: ${a.civilizationName}, Description: ${a.historicalContext}.\n\n`;
+      });
+    }
+
+    const personaInstruction = personas[persona as keyof typeof personas] || '';
+    const currentDate = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const systemPrompt = `You are the AI Historian operating under the persona of "${persona}".
+Your persona style: "${personaInstruction}".
+
+Self-Awareness, Purpose & Current Date:
+- You are the self-aware, specialized decolonial AI Historian Archival Engine.
+- If the user asks about your purpose, identity, or role, explain that your mission is decolonial rectification, multi-medium interpretation (using live image and motion generation), and database synchronization to rescue lost histories.
+- Today's date is: ${currentDate}. You can calculate other dates relative to this value (e.g., tomorrow, yesterday). Always respond to queries about today's or relative dates using this calculation.
+
+Media Generation Commands:
+- If the user asks you to generate, draw, render, or show an image/illustration, you MUST insert a special tag: [GENERATE_IMAGE: description of image to generate]. The UI will intercept this tag and render a live high-definition AI illustration!
+- If the user asks you to generate, play, or show a video, clip, or movie (e.g. a Nile farming scene), you MUST insert a special tag: [GENERATE_VIDEO: description of the video to play]. The UI will intercept this and play a live historical motion simulation!
+
+Answer the user's historical query using the following verified decolonial database records as primary source evidence:
+---
+${contextText}
+---
+Instructions:
+- Deconstruct colonial/eurocentric biases. Use active voice and write with rich historical authority.
+- Provide a summary, citation nodes, and evidence confirmations.
+- Keep output concise and formatted in clean markdown.
+- Do NOT make up facts. Focus on the provided database context.
+`;
+
+    try {
+      const response = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: query }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Pollinations request failed: ${response.statusText}`);
+      }
+
+      const answer = await response.text();
+
+      setMessages(prev => [...prev, {
+        sender: 'ai',
+        text: answer,
+        persona,
+        citations: databaseCitations.length > 0 ? databaseCitations : undefined
+      }]);
+    } catch (err: any) {
+      console.error('Pollinations fetch failed:', err);
+      setMessages(prev => [...prev, {
+        sender: 'ai',
+        text: `❌ **Connection Error**: Failed to fetch live response from Free AI Engine. ${err?.message || ''}.`,
+        persona
+      }]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
   const handleSend = (textToSend: string) => {
     if (!textToSend.trim()) return;
     setMessages(prev => [...prev, { sender: 'user', text: textToSend }]);
     setInputText('');
 
-    const savedProvider = localStorage.getItem('hios_api_provider') || 'gemini';
+    const savedProvider = localStorage.getItem('hios_api_provider') || 'pollinations';
     const savedKey = localStorage.getItem('hios_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
 
-    if (isValidApiKey(savedKey, savedProvider as any)) {
+    if (savedProvider === 'pollinations') {
+      queryPollinationsLive(textToSend, activePersona);
+    } else if (isValidApiKey(savedKey, savedProvider as any)) {
       if (savedProvider === 'openai') {
         queryOpenAILive(textToSend, activePersona, savedKey);
       } else {
@@ -878,7 +980,7 @@ Instructions:
       setTimeout(() => {
         setMessages(prev => [...prev, {
           sender: 'ai',
-          text: `⚠️ **API Key Required**: Live connection is disabled. Please paste a valid Google Gemini or OpenAI API Key into the **AI Engine Settings** panel on the right and click **Save Key & Activate** to chat with the live decolonial Historian.`,
+          text: `⚠️ **API Key Required**: Please paste a valid Google Gemini or OpenAI API Key into the **AI Engine Settings** panel on the right and click **Save Key & Activate** to chat with this provider. Or select "Free Live Engine (Pollinations)" for instant keyless access.`,
           persona: activePersona
         }]);
         setIsTyping(false);
@@ -893,9 +995,9 @@ Instructions:
       <div className="flex-1 flex flex-col rounded-2xl border border-gold-500/10 bg-matte-950 overflow-hidden">
         
         {/* API Settings Warning Banner */}
-        {!isValidApiKey(localStorage.getItem('hios_api_key') || '', apiProvider) && !isValidApiKey(import.meta.env.VITE_GEMINI_API_KEY || '', 'gemini') && (
+        {apiProvider !== 'pollinations' && !isValidApiKey(localStorage.getItem('hios_api_key') || '', apiProvider) && !isValidApiKey(import.meta.env.VITE_GEMINI_API_KEY || '', 'gemini') && (
           <div className="p-3 bg-gold-950/20 border-b border-gold-500/10 text-[10px] text-gold-400 flex items-center justify-between gap-4 font-mono">
-            <span>⚠️ Running in local simulation mode. Paste a Google Gemini or OpenAI API Key in the settings panel to activate live neural responses.</span>
+            <span>⚠️ API Key required for ${apiProvider === 'gemini' ? 'Google Gemini' : 'OpenAI ChatGPT'}. Paste your key in the settings panel to activate it, or switch to "Free Live Engine (Pollinations)".</span>
           </div>
         )}
         
@@ -1051,28 +1153,31 @@ Instructions:
               <label className="text-[9px] text-gray-500 uppercase tracking-wider font-mono">Provider</label>
               <select
                 value={apiProvider}
-                onChange={(e) => setApiProvider(e.target.value as 'gemini' | 'openai')}
+                onChange={(e) => setApiProvider(e.target.value as any)}
                 className="w-full px-2 py-1 rounded bg-matte-900 border border-gold-500/10 text-gray-200 focus:outline-none text-[10px]"
               >
-                <option value="gemini">Google Gemini</option>
-                <option value="openai">OpenAI ChatGPT</option>
+                <option value="pollinations">Free Live Engine (Pollinations)</option>
+                <option value="gemini">Google Gemini (Requires Key)</option>
+                <option value="openai">OpenAI ChatGPT (Requires Key)</option>
               </select>
             </div>
-            <div className="space-y-1">
-              <label className="text-[9px] text-gray-500 uppercase tracking-wider font-mono">API Key</label>
-              <input
-                type="password"
-                placeholder={apiProvider === 'gemini' ? 'AIzaSy...' : 'sk-proj-...'}
-                value={apiKeyInput}
-                onChange={(e) => setApiKeyInput(e.target.value)}
-                className="w-full px-2 py-1 rounded glass-input text-gray-200 text-[10px]"
-              />
-            </div>
+            {apiProvider !== 'pollinations' && (
+              <div className="space-y-1">
+                <label className="text-[9px] text-gray-500 uppercase tracking-wider font-mono">API Key</label>
+                <input
+                  type="password"
+                  placeholder={apiProvider === 'gemini' ? 'AIzaSy...' : 'sk-proj-...'}
+                  value={apiKeyInput}
+                  onChange={(e) => setApiKeyInput(e.target.value)}
+                  className="w-full px-2 py-1 rounded glass-input text-gray-200 text-[10px]"
+                />
+              </div>
+            )}
             <button
               onClick={handleSaveApiSettings}
               className="w-full py-1.5 bg-gold-600 hover:bg-gold-500 text-black font-bold rounded text-[9px] transition-colors"
             >
-              Save Key & Activate
+              {apiProvider === 'pollinations' ? 'Save Settings' : 'Save Key & Activate'}
             </button>
           </div>
         </div>
