@@ -18,38 +18,18 @@ export const ComparativeAnalysis: React.FC = () => {
     setComparisonReport('');
     
     const apiKey = localStorage.getItem('hios_api_key') || (import.meta.env.VITE_GEMINI_API_KEY as string) || '';
-    if (!apiKey) {
-      // Offline fallback: Pre-compiled comparative synthesis
+    
+    const isValidApiKey = (key: string) => {
+      if (!key) return false;
+      const cleanKey = key.trim();
+      return !(cleanKey === '' || cleanKey.toLowerCase().includes('your_') || cleanKey.toLowerCase().includes('api_key') || cleanKey.length < 15);
+    };
+
+    if (!isValidApiKey(apiKey)) {
       setTimeout(() => {
-        let fallbackText = '';
-        if (civA.id === 'kemet' && civB.id === 'kush') {
-          fallbackText = `### Decolonial Comparative Synthesis: Kemet & Kush
-
-1. **Chronological Alignment & Sovereignty**:
-   - Egypt (Kemet) and Nubia (Kush) shared a deeply intertwined Nile Valley relationship spanning over three millennia. Kush was not a mere vassal; it was a sovereign power.
-   
-2. **Metallurgy & Trade Control**:
-   - Kush (Napata/Meroë) was a major iron-smelting center, exporting arms and agricultural tools, while Kemet relied on bronze and imported iron.
-   
-3. **Decolonial Rectification**:
-   - The 25th Dynasty represents the unification of the entire Nile Valley under Kushite rule. Pharaoh Piye and Queen Amanirenas led successful military counter-offensives against Roman expansion, showing high strategic competence.`;
-        } else {
-          fallbackText = `### Decolonial Comparative Synthesis: ${civA.name} & ${civB.name}
-
-1. **Regional Influence**:
-   - ${civA.name} dominated the ${civA.region} region during the ${civA.period} period.
-   - ${civB.name} controlled the ${civB.region} region during the ${civB.period} period.
-
-2. **Societal and Technological Infrastructure**:
-   - ${civA.name} implemented specialized governance using languages: ${civA.languages.join(', ')}.
-   - ${civB.name} structured its economy through languages: ${civB.languages.join(', ')}.
-
-3. **Decolonial Insights**:
-   - Both empires were central nodes in world trade networks rather than isolated peripheries. Their sophisticated architectural and administrative architectures developed independently of Eurocentric trajectories.`;
-        }
-        setComparisonReport(fallbackText);
+        setComparisonReport(`⚠️ **API Key Required**: Please configure a valid Google Gemini or OpenAI API Key in the settings panel of the **AI Historian** tab to enable live comparative analysis reports.`);
         setIsLoading(false);
-      }, 1000);
+      }, 500);
       return;
     }
 

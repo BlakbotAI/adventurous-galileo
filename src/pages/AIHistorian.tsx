@@ -674,10 +674,9 @@ Instructions:
         console.error('CORS Proxy fallback failed:', proxyErr);
         setMessages(prev => [...prev, {
           sender: 'ai',
-          text: `**Connection Error**: Failed to fetch live response from Gemini API. ${proxyErr?.message || ''}. Falling back to local offline search...`,
+          text: `❌ **Connection Error**: Failed to fetch live response from Gemini API. ${proxyErr?.message || ''}. Please check that your API Key is correct, active, and has access to Gemini.`,
           persona
         }]);
-        simulateResponse(query);
       }
     } finally {
       setIsTyping(false);
@@ -813,10 +812,9 @@ Instructions:
         console.error('CORS Proxy fallback failed for OpenAI:', proxyErr);
         setMessages(prev => [...prev, {
           sender: 'ai',
-          text: `**OpenAI Connection Error**: Failed to fetch live response. ${proxyErr?.message || ''}. Falling back to local offline search...`,
+          text: `❌ **OpenAI Connection Error**: Failed to fetch live response. ${proxyErr?.message || ''}. Please verify that your OpenAI API Key is correct and active.`,
           persona
         }]);
-        simulateResponse(query);
       }
     } finally {
       setIsTyping(false);
@@ -838,7 +836,15 @@ Instructions:
         queryGeminiLive(textToSend, activePersona, savedKey);
       }
     } else {
-      simulateResponse(textToSend);
+      setIsTyping(true);
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          sender: 'ai',
+          text: `⚠️ **API Key Required**: Live connection is disabled. Please paste a valid Google Gemini or OpenAI API Key into the **AI Engine Settings** panel on the right and click **Save Key & Activate** to chat with the live decolonial Historian.`,
+          persona: activePersona
+        }]);
+        setIsTyping(false);
+      }, 600);
     }
   };
 
