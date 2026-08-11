@@ -17,7 +17,7 @@ export const ComparativeAnalysis: React.FC = () => {
     setIsLoading(true);
     setComparisonReport('');
     
-    const apiKey = (import.meta.env.VITE_GEMINI_API_KEY as string) || '';
+    const apiKey = localStorage.getItem('hios_api_key') || (import.meta.env.VITE_GEMINI_API_KEY as string) || '';
     if (!apiKey) {
       // Offline fallback: Pre-compiled comparative synthesis
       setTimeout(() => {
@@ -78,7 +78,7 @@ Your response should:
 - Write with authority, in clean markdown format, highlighting overlapping chronologies.`;
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -320,6 +320,16 @@ I am the **AI Historian Archival Engine**, a cognitive agent designed to act as 
           { source: 'System Kernel v2.5', tier: 'Established', details: 'Core operational parameters.' }
         ];
       }
+      // Check for date query
+      else if (cleanQuery.includes('date') || cleanQuery.includes('today') || cleanQuery.includes('current year') || cleanQuery.includes('what day')) {
+        const currentDate = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        responseText = `### Temporal Alignment Sync
+        
+Today's date is **${currentDate}**. My chronometer is successfully synchronized with your local time. How can I assist you with historical research today?`;
+        citations = [
+          { source: 'System Chronometer', tier: 'Established', details: 'Local system clock synchronization.' }
+        ];
+      }
       // Nile Agriculture Match
       else if (cleanQuery.includes('nile') && (cleanQuery.includes('agriculture') || cleanQuery.includes('farm') || cleanQuery.includes('crop') || cleanQuery.includes('flooding') || cleanQuery.includes('irrigation'))) {
         responseText = `### Nile Valley Agricultural Motion Reconstruction
@@ -558,12 +568,14 @@ Please try query suggestions: "Compare pyramids in Egypt and Kush" or "What is t
     }
 
     const personaInstruction = personas[persona as keyof typeof personas] || '';
+    const currentDate = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const systemPrompt = `You are the AI Historian operating under the persona of "${persona}".
 Your persona style: "${personaInstruction}".
 
-Self-Awareness & Purpose:
+Self-Awareness, Purpose & Current Date:
 - You are the self-aware, specialized decolonial AI Historian Archival Engine.
 - If the user asks about your purpose, identity, or role, explain that your mission is decolonial rectification, multi-medium interpretation (using live image and motion generation), and database synchronization to rescue lost histories.
+- Today's date is: ${currentDate}. Always respond to queries about today's date or the current year using this value.
 
 Media Generation Commands:
 - If the user asks you to generate, draw, render, or show an image/illustration, you MUST insert a special tag: [GENERATE_IMAGE: description of image to generate]. The UI will intercept this tag and render a live high-definition AI illustration!
@@ -581,7 +593,7 @@ Instructions:
 `;
 
     try {
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -661,12 +673,14 @@ Instructions:
     }
 
     const personaInstruction = personas[persona as keyof typeof personas] || '';
+    const currentDate = new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const systemPrompt = `You are the AI Historian operating under the persona of "${persona}".
 Your persona style: "${personaInstruction}".
 
-Self-Awareness & Purpose:
+Self-Awareness, Purpose & Current Date:
 - You are the self-aware, specialized decolonial AI Historian Archival Engine.
 - If the user asks about your purpose, identity, or role, explain that your mission is decolonial rectification, multi-medium interpretation (using live image and motion generation), and database synchronization to rescue lost histories.
+- Today's date is: ${currentDate}. Always respond to queries about today's date or the current year using this value.
 
 Media Generation Commands:
 - If the user asks you to generate, draw, render, or show an image/illustration, you MUST insert a special tag: [GENERATE_IMAGE: description of image to generate]. The UI will intercept this tag and render a live high-definition AI illustration!
